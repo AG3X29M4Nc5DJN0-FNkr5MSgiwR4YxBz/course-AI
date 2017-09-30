@@ -10,8 +10,7 @@ def depthfirst_search(initialState):
     closed = []
     while(not fringe.isEmpty()):
         currentNode = fringe.pop()
-        #TODO what is solution node : to implement?
-        if (currentNode == solutionNode):
+        if (currentNode.isGoal()):
             return currentNode
         #TODO modify to fit the nodeclass
         children = currentNode.generate
