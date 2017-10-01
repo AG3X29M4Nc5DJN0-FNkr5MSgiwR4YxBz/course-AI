@@ -30,6 +30,20 @@ class unitTest(unittest.TestCase):
         print("test printing goal state")
         goal.show()
 
+        #Test if we can detect goal
+        self.assertEqual(goal.isGoal(),True)
+        self.assertEqual(state2.isGoal(),False)
+        #Test possibleActions
+        #In state3 1 0 2
+        #          3 4 5
+        #          6 7 8
+        #There are 3 possibles actions : move left, move down or move right
+        #Thus actions is
+        action = ['0','2','-1','4']
+        possibleAction = state3.possibleActions()
+        self.assertEqual(action,possibleAction)
+
+
 class EightPuzzleState(State):
 
     #initializes the eight puzzle with the configuration passed in parameter (numbers)
@@ -43,7 +57,6 @@ class EightPuzzleState(State):
             return True
         else:
             return False
-
 
     # returns the set of legal actions in the current state
     # the set of legal movements are confined in a list, the list has always 4 of length
