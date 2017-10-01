@@ -5,13 +5,30 @@
 
 import timeit
 
+if __name__=='__main__':
+    #If we run the testcases add syspath to fix imports
+    import sys
+    sys.path.append("../../")
+
 import numpy as np
 import random
-from breadthfirst_search import *
-from depthfirst_search import *
-from astar_search import *
-from state import *
+from searchdir.blindSearch.breadthfirst_search import *
+from searchdir.blindSearch.depthfirst_search import *
+from searchdir.heuristicSearch.astar_search import *
+from searchdir.state import *
+import unittest
 
+class unitTest(unittest.TestCase):
+
+    def testEightPuzzleState(self):
+        #Make test state
+        print("Test creating states")
+        goal = EightPuzzleState(['0','1','2','3','4','5','6','7','8'])
+        state1 = EightPuzzleState(['8','4','3','2','5','0','6','7','1'])
+        state2 = EightPuzzleState(['4','7','6','1','2','5','8','0','3'])
+        state3 = EightPuzzleState(['1','0','2','3','4','5','6','7','8'])
+        print("test printing goal state")
+        goal.show()
 
 class EightPuzzleState(State):
 
@@ -142,6 +159,7 @@ class EightPuzzleState(State):
     # make sure to explain it clearly in your comment
     def heuristic2(self, matrix, goal):
         # TO COMPLETE
+        return -1
 
 
 ####################### SOLVABILITY ###########################
@@ -176,7 +194,8 @@ def shuffle_ran(self,board, moves):
             newState.executeAction(random.choice(list(board.possibleActions())))
             moves= moves+1
             return self.shuffle_ran(newState, moves)
-
+#Run unit test first
+unittest.main()
 #######  SEARCH ###########################
 EIGHT_PUZZLE_DATA = [[0, 1, 2, 3, 4, 5, 6, 7, 8],
                      [1, 0, 2, 3, 4, 5, 6, 7, 8],
@@ -210,5 +229,4 @@ else:
     solution, nbvisited = astar_search(puzzle)
     stop = timeit.default_timer()
     printResults('A*', solution, start, stop, nbvisited)
-
 
