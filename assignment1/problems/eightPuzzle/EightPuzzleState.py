@@ -23,23 +23,23 @@ class unitTest(unittest.TestCase):
     def testEightPuzzleState(self):
         #Make test state
         print("Test creating states")
-        goal = EightPuzzleState(['0','1','2','3','4','5','6','7','8'])
-        state1 = EightPuzzleState(['8','4','3','2','5','0','6','7','1'])
-        state2 = EightPuzzleState(['4','7','6','1','2','5','8','0','3'])
-        state3 = EightPuzzleState(['1','0','2','3','4','5','6','7','8'])
+        goal = EightPuzzleState([0,1,2,3,4,5,6,7,8])
+        state1 = EightPuzzleState([8,4,3,2,5,0,6,7,1])
+        state2 = EightPuzzleState([4,7,6,1,2,5,8,0,3])
+        state3 = EightPuzzleState([1,0,2,3,4,5,6,7,8])
         print("test printing goal state")
         goal.show()
 
         #Test if we can detect goal
-        self.assertEqual(goal.isGoal(),True)
-        self.assertEqual(state2.isGoal(),False)
+        self.assertEqual(goal.isGoal(), True)
+        self.assertEqual(state2.isGoal(), False)
         #Test possibleActions
         #In state3 1 0 2
         #          3 4 5
         #          6 7 8
         #There are 3 possibles actions : move left, move down or move right
         #Thus actions is
-        action = ['0','2','-1','4']
+        action = [0,2,-1,4]
         possibleAction = state3.possibleActions()
         self.assertEqual(action,possibleAction)
 
@@ -48,12 +48,12 @@ class EightPuzzleState(State):
 
     #initializes the eight puzzle with the configuration passed in parameter (numbers)
     def __init__(self, numbers):
-       self.configuration = numbers  #initializes the array of tiles 0 will represent the empty tile
+        self.configuration = numbers  #initializes the array of tiles 0 will represent the empty tile
 
 
     #returns a boolean value that indicates if the current configuration is the same as the goal configuration
     def isGoal(self):
-        if self.configuration == ['0','1','2','3','4','5','6','7','8']:
+        if self.configuration == [0,1,2,3,4,5,6,7,8]:
             return True
         else:
             return False
@@ -68,33 +68,33 @@ class EightPuzzleState(State):
     def possibleActions(self):
         actions = []
         # four possible actions at most and at least two
-        test = self.configuration.index('0') - 1
+        test = self.configuration.index(0) - 1
         if test != -1 or 2 or 5:
             # empty tile is not in first column and can thus move to the left
             actions.append(test)
         else:
-            actions.append('-1')  # insert invalid move for left movement
+            actions.append(-1)  # insert invalid move for left movement
 
-        test = self.configuration.index('0') + 1
+        test = self.configuration.index(0) + 1
         if test != 3 or 6 or 9:
             # empty tile is not in third column and can thus move to the right
             actions.append(test)
         else:
-            actions.append('-1')  # insert invalid move for right movement
+            actions.append(-1)  # insert invalid move for right movement
 
-        test = self.configuration.index('0') - 3
+        test = self.configuration.index(0) - 3
         if test >= 0:
             # empty tile is not in first row and can thus move to the top
             actions.append(test)
         else:
-            actions.append('-1')  # insert invalid move for top movement
+            actions.append(-1)  # insert invalid move for top movement
 
-        test = self.configuration.index('0') + 3
+        test = self.configuration.index(0) + 3
         if test <= 8:
             # empty tile is not in first row and can thus move to the bottom
             actions.append(test)
         else:
-            actions.append('-1')  # insert invalid move for bottom movement
+            actions.append(-1)  # insert invalid move for bottom movement
 
         return actions
 
@@ -124,25 +124,26 @@ class EightPuzzleState(State):
         # | 6 | 7 | 8 |
         # -----------
     def show(self):
-        print('-----------\n')  # prints first line of dashes
-        print('|')
-        i = 0  # mini iterator for the configuration
-        while i > 3:
-            print(" " + self.configuration[i]+ " |")
-            i += 1
-        print('-----------\n')
+        print(' -----------')  # prints first line of dashes
 
-        print('|')
-        while i > 4:
-            print(" " + self.configuration[i] + " |")
+        i = 0
+        while i < 3:
+            print("| " + str(self.configuration[i]) + " ", end="")
             i += 1
-        print('-----------\n')
+        print("|")
+        print(' -----------')  # prints last line of dashes
 
-        print('|')
-        while i > 9:
-            print(" " + self.configuration[i] + " |")
+        while i < 6:
+            print("| " + str(self.configuration[i]) + " ", end="")
             i += 1
-        print('\n-----------\n')  # prints first line of dashes
+        print("|")
+        print(' -----------')  # prints last line of dashes
+
+        while i < 9:
+            print("| " + str(self.configuration[i]) + " ", end="")
+            i += 1
+        print("|")
+        print(' -----------')  # prints last line of dashes
 
     # returns the cost of the action in parameter
     def cost(self, action):
@@ -160,7 +161,7 @@ class EightPuzzleState(State):
 
     # returns the amount of wrongly placed tiles in the puzzle
     def heuristic1(self):
-        goal = ['0','1','2','3','4','5','6','7','8']
+        goal = [0,1,2,3,4,5,6,7,8]
         heuristic1 = 0
         i = 0
         while i > 9:
