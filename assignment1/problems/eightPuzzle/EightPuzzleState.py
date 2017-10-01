@@ -7,54 +7,116 @@ import timeit
 
 import numpy as np
 import random
-from searchdir.blindSearch.breadthfirst_search import *
-from searchdir.blindSearch.depthfirst_search import *
-from searchdir.heuristicSearch.astar_search import *
-from searchdir.state import *
+from breadthfirst_search import *
+from depthfirst_search import *
+from astar_search import *
+from state import *
 
 
 class EightPuzzleState(State):
 
     #initializes the eight puzzle with the configuration passed in parameter (numbers)
     def __init__(self, numbers):
-       # TO COMPLETE
-
+       self.configuration = numbers  #initializes the array of tiles 0 will represent the empty tile
 
 
     #returns a boolean value that indicates if the current configuration is the same as the goal configuration
     def isGoal(self):
-        # TO COMPLETE
+        if self.configuration == ['0','1','2','3','4','5','6','7','8']:
+            return True
+        else:
+            return False
 
 
     # returns the set of legal actions in the current state
+    # the set of legal movements are confined in a list, the list has always 4 of length
+    # the first position represents the new empty position to the left, -1 if impossible
+    # the second position represents the new empty position to the right, -1 if impossible
+    # the third position represents the new empty position to the top, -1 if impossible
+    # the fourth position represents the new empty position to the bottom, -1 if impossible
+
     def possibleActions(self):
-         # TO COMPLETE
+        actions = []
+        # four possible actions at most and at least two
+        test = self.configuration.index('0') - 1
+        if test != -1 or 2 or 5:
+            # empty tile is not in first column and can thus move to the left
+            actions.append(test)
+        else:
+            actions.append('-1')  # insert invalid move for left movement
+
+        test = self.configuration.index('0') + 1
+        if test != 3 or 6 or 9:
+            # empty tile is not in third column and can thus move to the right
+            actions.append(test)
+        else:
+            actions.append('-1')  # insert invalid move for right movement
+
+        test = self.configuration.index('0') - 3
+        if test >= 0:
+            # empty tile is not in first row and can thus move to the top
+            actions.append(test)
+        else:
+            actions.append('-1')  # insert invalid move for top movement
+
+        test = self.configuration.index('0') + 3
+        if test <= 8:
+            # empty tile is not in first row and can thus move to the bottom
+            actions.append(test)
+        else:
+            actions.append('-1')  # insert invalid move for bottom movement
+
+        return actions
 
 
     # applies the result of the move on the current state
     def executeAction(self, move):
-        # TO COMPLETE
+        # Here, we have to switch the index of the empty tile with the tile at the new empty tile
+        # I suspect there is going to be a method to chose which direction the empty tile is going to move
+        # so I assume that move is a number taken from the possibleActions return statement
 
+        tempValue = self.configuration.index(move)  # store the value of the tile before it becomes empty
+        self.configuration[self.configuration.index('0')] = tempValue  # place that value where the old empty tile was
+        self.configuration[move] = 0  # place the new empty tile
 
     # returns true if the current state is the same as other, false otherwise
+    # other must be a list
     def equals(self, other):
-    # TO COMPLETE
+        return self.configuration == other
 
 
     # prints the grid representing the current state
     # e.g. -----------
-        # |   | 1 | 2 |
+        # | 0 | 1 | 2 |
         # -----------
         # | 3 | 4 | 5 |
         # -----------
         # | 6 | 7 | 8 |
         # -----------
     def show(self):
-    # TO COMPLETE
+        print('-----------\n')  # prints first line of dashes
+        print('|')
+        i = 0  # mini iterator for the configuration
+        while i > 3:
+            print(" " + self.configuration[i]+ " |")
+            i += 1
+        print('-----------\n')
+
+        print('|')
+        while i > 4:
+            print(" " + self.configuration[i] + " |")
+            i += 1
+        print('-----------\n')
+
+        print('|')
+        while i > 9:
+            print(" " + self.configuration[i] + " |")
+            i += 1
+        print('\n-----------\n')  # prints first line of dashes
 
     # returns the cost of the action in parameter
     def cost(self, action):
-    # TO COMPLETE
+        return 1
 
     # returns the value of the heuristic for the current state
     # note that you can alternatively call heuristic1() and heuristic2() to test both heuristics with A*
@@ -65,8 +127,15 @@ class EightPuzzleState(State):
 
     ## returns the value of your first heuristic for the current state
     # make sure to explain it clearly in your comment
+
+    # returns the amount of wrongly placed tiles in the puzzle
     def heuristic1(self):
-        # TO COMPLETE
+        goal = ['0','1','2','3','4','5','6','7','8']
+        heuristic1 = 0
+        i = 0
+        while i > 9:
+            if self.configuration[i] != goal[i]:  # if the value at the same index is not the same, means they
+                heuristic1 += 1                   # at the wrong place
 
 
     # returns the value of your first heuristic for the current state
@@ -99,7 +168,7 @@ def randomize(puzzle):
             puzzle_choice.append(item)
     return puzzle, puzzle_choice
 
-    def shuffle_ran(self,board, moves):
+def shuffle_ran(self,board, moves):
         newState = board
         if moves==100:
             return newState
