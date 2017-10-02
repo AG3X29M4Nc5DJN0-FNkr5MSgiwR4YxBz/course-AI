@@ -30,6 +30,8 @@ class unitTest(unittest.TestCase):
         print("test printing goal state")
         goal.show()
 
+        print("test printing state3")
+        state3.show()
         #Test if we can detect goal
         self.assertEqual(goal.isGoal(), True)
         self.assertEqual(state2.isGoal(), False)
@@ -37,11 +39,51 @@ class unitTest(unittest.TestCase):
         #In state3 1 0 2
         #          3 4 5
         #          6 7 8
-        #There are 3 possibles actions : move left, move down or move right
+        #There are 3 possibles actions : move left, move right or move down
         #Thus actions is
         action = [0,2,-1,4]
         possibleAction = state3.possibleActions()
         self.assertEqual(action,possibleAction)
+        
+        #Test move down on state3
+        print("move down")
+        state3.executeAction(action[3])
+        state3.show()
+        expected = EightPuzzleState([1,4,2,3,0,5,6,7,8])
+        self.assertEqual(state3.configuration,expected.configuration)
+        #Test move left on new state3
+        #In state3  1 4 2
+        #           3 0 5
+        #           6 7 8
+        print("move left")
+        action = [3,5,1,7]
+        possibleAction = state3.possibleActions()
+        self.assertEqual(action,possibleAction)
+
+        state3.executeAction(action[0])
+        state3.show()
+        expected = EightPuzzleState([1,4,2,0,3,5,6,7,8])
+        #test equals()
+        self.assertEqual(state3.equals(expected.configuration),True)
+
+        #Test heuristics
+        closeState = EightPuzzleState([1,0,2,3,4,5,6,7,8])
+        farState =   EightPuzzleState([8,7,6,5,4,3,2,1,0])
+
+        h1 = closeState.heuristic1()
+        h1Far = farState.heuristic1()
+        h1Goal = goal.heuristic1()
+        self.assertEqual(h1,2)
+        self.assertEqual(h1Far,8)
+        self.assertEqual(h1Goal,0)
+
+        h2 = closeState.heuristic2()
+        h2Far = farState.heuristic2()
+        h1Goal = goal.heuristic()
+
+
+
+        self.assertEqual(h2Goal,0)
 
 
 class EightPuzzleState(State):
@@ -106,7 +148,7 @@ class EightPuzzleState(State):
         # so I assume that move is a number taken from the possibleActions return statement
 
         tempValue = self.configuration.index(move)  # store the value of the tile before it becomes empty
-        self.configuration[self.configuration.index('0')] = tempValue  # place that value where the old empty tile was
+        self.configuration[self.configuration.index(0)] = tempValue  # place that value where the old empty tile was
         self.configuration[move] = 0  # place the new empty tile
 
     # returns true if the current state is the same as other, false otherwise
@@ -164,9 +206,11 @@ class EightPuzzleState(State):
         goal = [0,1,2,3,4,5,6,7,8]
         heuristic1 = 0
         i = 0
-        while i > 9:
+        while i < 9:
             if self.configuration[i] != goal[i]:  # if the value at the same index is not the same, means they
                 heuristic1 += 1                   # at the wrong place
+            i = i + 1
+        return heuristic1
 
 
     # returns the value of your first heuristic for the current state
