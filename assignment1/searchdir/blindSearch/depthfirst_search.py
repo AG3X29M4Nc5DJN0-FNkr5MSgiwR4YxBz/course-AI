@@ -12,8 +12,15 @@ def depthfirst_search(initialState):
         currentNode = fringe.pop()
         if (currentNode.isGoal()):
             return currentNode
-        #TODO modify to fit the nodeclass
-        children = currentNode.generate
+        listActions = currentNode.possibleActions()
+        children = []
+        #Create a new node, make the action and add the children list
+        for a in listActions:
+            #Copy node, make action then store in stack
+            childNode = EightPuzzleState(currentNode.configuration)
+            childNode.executeAction(a)
+            children.append(childNode)
+        
         closed.append(currentNode)
         for node in children:
             if(node not in closed and node not in fringe):
