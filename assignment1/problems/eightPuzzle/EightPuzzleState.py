@@ -17,8 +17,6 @@ from searchdir.blindSearch.depthfirst_search import *
 from searchdir.heuristicSearch.astar_search import *
 from searchdir.state import *
 import unittest
-#TODO remove
-import random
 
 class unitTest(unittest.TestCase):
 
@@ -103,13 +101,6 @@ class EightPuzzleState(State):
             return False
 
     # returns the set of legal actions in the current state
-    # the set of legal movements are confined in a list, the list has always 4 of length
-    # the first position represents the new empty position to the left, -1 if impossible
-    # the second position represents the new empty position to the right, -1 if impossible
-    # the third position represents the new empty position to the top, -1 if impossible
-    # the fourth position represents the new empty position to the bottom, -1 if impossible
-
-
     #In the list, 0 = left, 1 = right, 2 = up and 3 = down
     def possibleActions(self):
         actions = []
@@ -136,10 +127,6 @@ class EightPuzzleState(State):
 
     # applies the result of the move on the current state
     def executeAction(self, move):
-        #TODO change comments
-        # Here, we have to switch the index of the empty tile with the tile at the new empty tile
-        # I suspect there is going to be a method to chose which direction the empty tile is going to move
-        # so I assume that move is a number taken from the possibleActions return statement
         #TODO can we do something less hard coded?
         #Create a new copy of the node
         child = EightPuzzleState(self.configuration)
@@ -173,22 +160,12 @@ class EightPuzzleState(State):
             child.configuration[index0] = tempValue
             child.configuration[index0+3] = 0
 
-        #TODO remove
-        #Debug : sometimes show the state
-        a = random.randint(0,10000)
-        if(a<5):
-            child.show()
-
         return child
     # returns true if the current state is the same as other, false otherwise
     # other must be a list
     def equals(self, other):
         return self.configuration == other
     
-    #Def a function so we can compare objects with ==
-    def __eq__(self,other):
-        return self.configuration == other.configuration
-
     # prints the grid representing the current state
     # e.g. -----------
         # | 0 | 1 | 2 |

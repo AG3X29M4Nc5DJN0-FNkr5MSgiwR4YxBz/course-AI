@@ -8,7 +8,6 @@ import unittest
 
 # :)
 class unitTest(unittest.TestCase):
-
     def testQueue(self):
         testQueue = Queue()
         
@@ -29,8 +28,8 @@ class unitTest(unittest.TestCase):
         size = len(current)
         self.assertEqual(size,1)
         #Test contains
-        self.assertEqual(testQueue.__contains__("test2"),True)
-        self.assertEqual(testQueue.__contains__("test1"),False)
+        self.assertEqual("test2" in testQueue,True)
+        self.assertEqual("test1" in testQueue,False)
 
         self.assertEqual(testQueue.isEmpty(),False)
 
@@ -56,8 +55,8 @@ class unitTest(unittest.TestCase):
         self.assertEqual(size,2)
 
         #test contains
-        self.assertEqual(testpQueue.__contains__("min chat"),True)
-        self.assertEqual(testpQueue.__contains__("faux chat"),False)
+        self.assertEqual("min chat" in testpQueue,True)
+        self.assertEqual("faux chat" in testpQueue,False)
         self.assertEqual(testpQueue.isEmpty(),False)
 
     def testStack(self):
@@ -81,8 +80,8 @@ class unitTest(unittest.TestCase):
         size = len(current)
         self.assertEqual(size,3)
         #test contains
-        self.assertEqual(testStack.__contains__(3),True)
-        self.assertEqual(testStack.__contains__(5),False)
+        self.assertEqual(3 in testStack,True)
+        self.assertEqual(5 in testStack,False)
         self.assertEqual(testStack.isEmpty(),False)
         
 #Queue - Implementation of the data structure Queue
