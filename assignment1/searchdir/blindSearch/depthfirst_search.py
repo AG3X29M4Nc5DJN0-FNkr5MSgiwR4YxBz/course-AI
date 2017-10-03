@@ -6,7 +6,8 @@ from searchdir.util import *
 def depthfirst_search(initialState):
     print('DFS ----------------------------------')
     fringe = Stack()
-    fringe.push(initialState)
+    node = Node(initialState)
+    fringe.push(node)
     closed = []
     while(not fringe.isEmpty()):
         currentNode = fringe.pop()

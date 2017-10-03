@@ -6,19 +6,21 @@ from searchdir.util import *
 def breadthfirst_search(initialState):
     print('BFS------------------------------')
     fringe = Queue()
-    if(initialState.isGoal()):
-        return initialState
-    fringe.enqueue(initialState)
+    nbVisited = 0
+    node = Node(initialState)
+    if(node.state.isGoal()):
+        return node,nbVisited
+    fringe.enqueue(node)
     explored = []
     while(not fringe.isEmpty()):
         currentNode = fringe.dequeue()
-        explored.append(currentNode)
-        for action in currentNode.possibleActions():
-            child = currentNode.executeAction(action)
+        explored.append(currentNode.state)
+        nbVisited = nbVisited + 1
+        children = currentNode.expand()
+        for child in children:
             #check if child is in fringe or in explored
-            if(not(child in fringe or child in explored)):
-                if(child.isGoal()):
-                    child.show()
-                    return child
+            if(not(child in fringe or child.state in explored)):
+                if(child.state.isGoal()):
+                    return child,nbVisited
                 fringe.enqueue(child)
     return -1

@@ -59,9 +59,11 @@ class unitTest(unittest.TestCase):
         action = [0,1,2,3]
         possibleAction = c.possibleActions()
         self.assertEqual(action,possibleAction)
-
+        print("***")
+        c.show()
         c1 = c.executeAction(action[0])
-        c1.show()
+        c.show()
+        print("***")
         expected = EightPuzzleState([1,4,2,0,3,5,6,7,8])
         #test equals()
         self.assertEqual(state3.equals(expected.configuration),True)
@@ -128,7 +130,7 @@ class EightPuzzleState(State):
     # applies the result of the move on the current state
     def executeAction(self, move):
         #TODO can we do something less hard coded?
-        #Create a new copy of the node
+        #TODO apply it on current state - remove child
         child = EightPuzzleState(self.configuration)
         index0 = child.configuration.index(0)
         #move left
@@ -159,7 +161,6 @@ class EightPuzzleState(State):
             #Exchange values
             child.configuration[index0] = tempValue
             child.configuration[index0+3] = 0
-
         return child
     # returns true if the current state is the same as other, false otherwise
     # other must be a list
@@ -228,6 +229,8 @@ class EightPuzzleState(State):
         # TO COMPLETE
         return -1
 
+    def __eq__(self,other):
+        return self.configuration == other.configuration
 
 ####################### SOLVABILITY ###########################
 
@@ -281,9 +284,6 @@ puzzle.show()
 if not issolvable(puzzle_choice):
     print("NOT SOLVABLE")
 else:
-    print("***")
-    breadthfirst_search(puzzle)
-
     start = timeit.default_timer()
     solution, nbvisited = breadthfirst_search(puzzle)
     stop = timeit.default_timer()
