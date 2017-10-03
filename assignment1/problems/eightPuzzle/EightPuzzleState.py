@@ -8,7 +8,7 @@ import timeit
 if __name__=='__main__':
     #If we run the testcases add syspath to fix imports
     import sys
-    sys.path.append("../../")
+    sys.path.append("./../../")
 
 import numpy as np
 import random
@@ -17,6 +17,8 @@ from searchdir.blindSearch.depthfirst_search import *
 from searchdir.heuristicSearch.astar_search import *
 from searchdir.state import *
 import unittest
+#TODO remove
+import random
 
 class unitTest(unittest.TestCase):
 
@@ -41,14 +43,14 @@ class unitTest(unittest.TestCase):
         #          6 7 8
         #There are 3 possibles actions : move left, move right or move down
         #Thus actions is
-        action = [0,2,-1,4]
+        action = [0,1,3]
         possibleAction = state3.possibleActions()
         self.assertEqual(action,possibleAction)
         
         #Test move down on state3
         print("move down")
-        state3.executeAction(action[3])
-        state3.show()
+        c = state3.executeAction(action[2])
+        c.show()
         expected = EightPuzzleState([1,4,2,3,0,5,6,7,8])
         self.assertEqual(state3.configuration,expected.configuration)
         #Test move left on new state3
@@ -56,12 +58,12 @@ class unitTest(unittest.TestCase):
         #           3 0 5
         #           6 7 8
         print("move left")
-        action = [3,5,1,7]
-        possibleAction = state3.possibleActions()
+        action = [0,1,2,3]
+        possibleAction = c.possibleActions()
         self.assertEqual(action,possibleAction)
 
-        state3.executeAction(action[0])
-        state3.show()
+        c1 = c.executeAction(action[0])
+        c1.show()
         expected = EightPuzzleState([1,4,2,0,3,5,6,7,8])
         #test equals()
         self.assertEqual(state3.equals(expected.configuration),True)
@@ -77,13 +79,13 @@ class unitTest(unittest.TestCase):
         self.assertEqual(h1Far,8)
         self.assertEqual(h1Goal,0)
 
-        h2 = closeState.heuristic2()
-        h2Far = farState.heuristic2()
-        h1Goal = goal.heuristic()
+#       h2 = closeState.heuristic2()
+#       h2Far = farState.heuristic2()
+#       h1Goal = goal.heuristic()
 
 
 
-        self.assertEqual(h2Goal,0)
+#        self.assertEqual(h2Goal,0)
 
 
 class EightPuzzleState(State):
@@ -107,55 +109,85 @@ class EightPuzzleState(State):
     # the third position represents the new empty position to the top, -1 if impossible
     # the fourth position represents the new empty position to the bottom, -1 if impossible
 
+
+    #In the list, 0 = left, 1 = right, 2 = up and 3 = down
     def possibleActions(self):
         actions = []
         # four possible actions at most and at least two
-        test = self.configuration.index(0) - 1
-        if test != -1 or 2 or 5:
+        index0 = self.configuration.index(0)
+        if index0 != 0 and index0 != 3 and index0 != 6:
             # empty tile is not in first column and can thus move to the left
-            actions.append(test)
-        else:
-            actions.append(-1)  # insert invalid move for left movement
+            actions.append(0)
 
-        test = self.configuration.index(0) + 1
-        if test != 3 or 6 or 9:
+        if index0 != 2 and index0 != 5 and index0 != 8:
             # empty tile is not in third column and can thus move to the right
-            actions.append(test)
-        else:
-            actions.append(-1)  # insert invalid move for right movement
+            actions.append(1)
 
-        test = self.configuration.index(0) - 3
-        if test >= 0:
+        if index0 >= 3:
             # empty tile is not in first row and can thus move to the top
-            actions.append(test)
-        else:
-            actions.append(-1)  # insert invalid move for top movement
+            actions.append(2)
 
-        test = self.configuration.index(0) + 3
-        if test <= 8:
-            # empty tile is not in first row and can thus move to the bottom
-            actions.append(test)
-        else:
-            actions.append(-1)  # insert invalid move for bottom movement
+        if index0 <= 5:
+            # empty tile is not in last row and can thus move to the bottom
+            actions.append(3)
 
         return actions
 
 
     # applies the result of the move on the current state
     def executeAction(self, move):
+        #TODO change comments
         # Here, we have to switch the index of the empty tile with the tile at the new empty tile
         # I suspect there is going to be a method to chose which direction the empty tile is going to move
         # so I assume that move is a number taken from the possibleActions return statement
+        #TODO can we do something less hard coded?
+        #Create a new copy of the node
+        child = EightPuzzleState(self.configuration)
+        index0 = child.configuration.index(0)
+        #move left
+        if(move == 0):
+            assert(index0 != 0 and index0 != 3 and index0 != 6)
+            tempValue = child.configuration[index0-1]
+            #Exchange values
+            child.configuration[index0] = tempValue
+            child.configuration[index0-1] = 0
+        #move right
+        elif(move == 1):
+            assert(index0 != 2 and index0 != 5 and index0 != 8)
+            tempValue = child.configuration[index0+1]
+            #Exchange values
+            child.configuration[index0] = tempValue
+            child.configuration[index0+1] = 0
+        #move up
+        elif(move == 2):
+            assert(index0 >= 3)
+            tempValue = child.configuration[index0-3]
+            #Exchange values
+            child.configuration[index0] = tempValue
+            child.configuration[index0-3] = 0
+        #move down
+        elif(move == 3):
+            assert(index0 <= 5)
+            tempValue = child.configuration[index0+3]
+            #Exchange values
+            child.configuration[index0] = tempValue
+            child.configuration[index0+3] = 0
 
-        tempValue = self.configuration.index(move)  # store the value of the tile before it becomes empty
-        self.configuration[self.configuration.index(0)] = tempValue  # place that value where the old empty tile was
-        self.configuration[move] = 0  # place the new empty tile
+        #TODO remove
+        #Debug : sometimes show the state
+        a = random.randint(0,10000)
+        if(a<5):
+            child.show()
 
+        return child
     # returns true if the current state is the same as other, false otherwise
     # other must be a list
     def equals(self, other):
         return self.configuration == other
-
+    
+    #Def a function so we can compare objects with ==
+    def __eq__(self,other):
+        return self.configuration == other.configuration
 
     # prints the grid representing the current state
     # e.g. -----------
@@ -253,7 +285,7 @@ def shuffle_ran(self,board, moves):
             moves= moves+1
             return self.shuffle_ran(newState, moves)
 #Run unit test first
-unittest.main()
+#unittest.main()
 #######  SEARCH ###########################
 EIGHT_PUZZLE_DATA = [[0, 1, 2, 3, 4, 5, 6, 7, 8],
                      [1, 0, 2, 3, 4, 5, 6, 7, 8],
@@ -272,10 +304,13 @@ puzzle.show()
 if not issolvable(puzzle_choice):
     print("NOT SOLVABLE")
 else:
-#    start = timeit.default_timer()
-#    solution, nbvisited = breadthfirst_search(puzzle)
-#    stop = timeit.default_timer()
-#    printResults('BFS', solution, start, stop, nbvisited)
+    print("***")
+    breadthfirst_search(puzzle)
+
+    start = timeit.default_timer()
+    solution, nbvisited = breadthfirst_search(puzzle)
+    stop = timeit.default_timer()
+    printResults('BFS', solution, start, stop, nbvisited)
 
 
     start = timeit.default_timer()
