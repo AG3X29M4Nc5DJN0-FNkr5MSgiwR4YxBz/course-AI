@@ -44,7 +44,7 @@ class unitTest(unittest.TestCase):
         action = [0,1,3]
         possibleAction = state3.possibleActions()
         self.assertEqual(action,possibleAction)
-        
+
         #Test move down on state3
         print("move down")
         c = state3.executeAction(action[2])
