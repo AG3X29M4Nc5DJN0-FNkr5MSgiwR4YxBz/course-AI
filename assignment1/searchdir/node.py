@@ -21,7 +21,7 @@ class Node(object):
     # Public methods
     ####################
 
-    # Returns a lis of all new nodes that represents next possible states in the exploration
+    # Returns a list of all new nodes that represents next possible states in the exploration
     def expand(self):
         return map(lambda s: self._createNode(s), self.state.possibleActions())
 
@@ -35,7 +35,7 @@ class Node(object):
         currentNode = self
         if currentNode is not None:
             while currentNode.previous:
-                solution.append((currentNode.action))
+                solution.append(currentNode.action)
                 currentNode = currentNode.previous
             solution.reverse()
         return solution

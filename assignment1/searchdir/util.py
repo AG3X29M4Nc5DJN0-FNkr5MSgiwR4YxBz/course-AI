@@ -147,7 +147,7 @@ class PriorityQueue:
     def dequeue(self):
         maxScore = 0
         #find the item with max score
-        for item,score in self.pQueue.items():
+        for item, score in self.pQueue.items():
             if (maxScore < score):
                 result = item
         #Delete it

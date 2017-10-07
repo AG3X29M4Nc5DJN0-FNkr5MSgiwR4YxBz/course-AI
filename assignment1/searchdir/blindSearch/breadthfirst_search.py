@@ -9,7 +9,7 @@ def breadthfirst_search(initialState):
     nbVisited = 0
     node = Node(initialState)
     if(node.state.isGoal()):
-        return node,nbVisited
+        return node, nbVisited
     fringe.enqueue(node)
     explored = []
     while(not fringe.isEmpty()):
