@@ -16,78 +16,78 @@ from searchdir.blindSearch.breadthfirst_search import *
 from searchdir.blindSearch.depthfirst_search import *
 from searchdir.heuristicSearch.astar_search import *
 from searchdir.state import *
-import unittest
-
-class unitTest(unittest.TestCase):
-
-    def testEightPuzzleState(self):
-        #Make test state
-        print("Test creating states")
-        goal = EightPuzzleState([0,1,2,3,4,5,6,7,8])
-        state1 = EightPuzzleState([8,4,3,2,5,0,6,7,1])
-        state2 = EightPuzzleState([4,7,6,1,2,5,8,0,3])
-        state3 = EightPuzzleState([1,0,2,3,4,5,6,7,8])
-        print("test printing goal state")
-        goal.show()
-
-        print("test printing state3")
-        state3.show()
-        #Test if we can detect goal
-        self.assertEqual(goal.isGoal(), True)
-        self.assertEqual(state2.isGoal(), False)
-        #Test possibleActions
-        #In state3 1 0 2
-        #          3 4 5
-        #          6 7 8
-        #There are 3 possibles actions : move left, move right or move down
-        #Thus actions is
-        action = [0,1,3]
-        possibleAction = state3.possibleActions()
-        self.assertEqual(action,possibleAction)
-
-        #Test move down on state3
-        print("move down")
-        c = state3.executeAction(action[2])
-        c.show()
-        expected = EightPuzzleState([1,4,2,3,0,5,6,7,8])
-        self.assertEqual(state3.configuration,expected.configuration)
-        #Test move left on new state3
-        #In state3  1 4 2
-        #           3 0 5
-        #           6 7 8
-        print("move left")
-        action = [0,1,2,3]
-        possibleAction = c.possibleActions()
-        self.assertEqual(action,possibleAction)
-        print("***")
-        c.show()
-        c1 = c.executeAction(action[0])
-        c.show()
-        print("***")
-        expected = EightPuzzleState([1,4,2,0,3,5,6,7,8])
-        #test equals()
-        self.assertEqual(state3.equals(expected.configuration),True)
-
-        #Test heuristics
-        closeState = EightPuzzleState([1,0,2,3,4,5,6,7,8])
-        farState =   EightPuzzleState([8,7,6,5,4,3,2,1,0])
-
-        h1 = closeState.heuristic1()
-        h1Far = farState.heuristic1()
-        h1Goal = goal.heuristic1()
-        self.assertEqual(h1,2)
-        self.assertEqual(h1Far,8)
-        self.assertEqual(h1Goal,0)
-
-#       h2 = closeState.heuristic2()
-#       h2Far = farState.heuristic2()
-#       h1Goal = goal.heuristic()
-
-
-
-#        self.assertEqual(h2Goal,0)
-
-
+# import unittest
+#
+# class unitTest(unittest.TestCase):
+#
+#     def testEightPuzzleState(self):
+#         #Make test state
+#         print("Test creating states")
+#         goal = EightPuzzleState([0,1,2,3,4,5,6,7,8])
+#         state1 = EightPuzzleState([8,4,3,2,5,0,6,7,1])
+#         state2 = EightPuzzleState([4,7,6,1,2,5,8,0,3])
+#         state3 = EightPuzzleState([1,0,2,3,4,5,6,7,8])
+#         print("test printing goal state")
+#         goal.show()
+#
+#         print("test printing state3")
+#         state3.show()
+#         #Test if we can detect goal
+#         self.assertEqual(goal.isGoal(), True)
+#         self.assertEqual(state2.isGoal(), False)
+#         #Test possibleActions
+#         #In state3 1 0 2
+#         #          3 4 5
+#         #          6 7 8
+#         #There are 3 possibles actions : move left, move right or move down
+#         #Thus actions is
+#         action = [0,1,3]
+#         possibleAction = state3.possibleActions()
+#         self.assertEqual(action,possibleAction)
+#
+#         #Test move down on state3
+#         print("move down")
+#         c = state3.executeAction(action[2])
+#         c.show()
+#         expected = EightPuzzleState([1,4,2,3,0,5,6,7,8])
+#         self.assertEqual(state3.configuration,expected.configuration)
+#         #Test move left on new state3
+#         #In state3  1 4 2
+#         #           3 0 5
+#         #           6 7 8
+#         print("move left")
+#         action = [0,1,2,3]
+#         possibleAction = c.possibleActions()
+#         self.assertEqual(action,possibleAction)
+#         print("***")
+#         c.show()
+#         c1 = c.executeAction(action[0])
+#         c.show()
+#         print("***")
+#         expected = EightPuzzleState([1,4,2,0,3,5,6,7,8])
+#         #test equals()
+#         self.assertEqual(state3.equals(expected.configuration),True)
+#
+#         #Test heuristics
+#         closeState = EightPuzzleState([1,0,2,3,4,5,6,7,8])
+#         farState =   EightPuzzleState([8,7,6,5,4,3,2,1,0])
+#
+#         h1 = closeState.heuristic1()
+#         h1Far = farState.heuristic1()
+#         h1Goal = goal.heuristic1()
+#         self.assertEqual(h1,2)
+#         self.assertEqual(h1Far,8)
+#         self.assertEqual(h1Goal,0)
+#
+# #       h2 = closeState.heuristic2()
+# #       h2Far = farState.heuristic2()
+# #       h1Goal = goal.heuristic()
+#
+#
+#
+# #        self.assertEqual(h2Goal,0)
+#
+#
 class EightPuzzleState(State):
 
     #initializes the eight puzzle with the configuration passed in parameter (numbers)
@@ -290,10 +290,10 @@ else:
     printResults('BFS', solution, start, stop, nbvisited)
 
 
-    start = timeit.default_timer()
-    solution, nbvisited = depthfirst_search(puzzle)
-    stop = timeit.default_timer()
-    printResults('DFS', solution, start, stop, nbvisited)
+    # start = timeit.default_timer()
+    # solution, nbvisited = depthfirst_search(puzzle)
+    # stop = timeit.default_timer()
+    # printResults('DFS', solution, start, stop, nbvisited)
 
     start = timeit.default_timer()
     solution, nbvisited = astar_search(puzzle)

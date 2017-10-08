@@ -2,6 +2,7 @@
 from searchdir.node import *
 from searchdir.util import *
 
+
 ## This method must implement depdth-first search (DFS)
 ## It must return the solution node and the number of visited nodes
 def depthfirst_search(initialState):
@@ -12,9 +13,9 @@ def depthfirst_search(initialState):
     closed = []
     while(not fringe.isEmpty()):
         currentNode = fringe.pop()
-        if (currentNode.isGoal()):
+        if (currentNode.state.isGoal()):
             return currentNode
-        listActions = currentNode.possibleActions()
+        listActions = currentNode.state.possibleActions()
         children = []
         #Create a new node, make the action and add the children list
         for a in listActions:

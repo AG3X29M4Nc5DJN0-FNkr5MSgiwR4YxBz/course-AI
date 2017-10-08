@@ -121,10 +121,9 @@ class Queue:
 #Priority Queue Implementation of the data structure PriorityQueue
 class PriorityQueue:
     # initializes the data structure
-    def __init__(self, fct):
+    def __init__(self):
         #use dictionaries
-        self.pQueue = {}
-        self.fct = fct
+        self.pQueue = []
 
     # returns the elements of the current data structure
     def show(self):
@@ -138,20 +137,22 @@ class PriorityQueue:
 
     # add the element item to the current data structure
     #TODO is that the right way to do it? Should we sort first or not?
-    def enqueue(self, item):
+    def enqueue(self, item, score):
     #We decided to add it to the dictionary and not sort it.
     #less complexity when queueing, more when dequeueing
     #TODO verify when does python think two items are the same?
-        self.pQueue[item] = self.fct(item)
+        self.pQueue.append([item, score])
     # removes an element from the current data structure
     def dequeue(self):
-        maxScore = 0
-        #find the item with max score
-        for item, score in self.pQueue.items():
-            if (maxScore < score):
+        maxScore = 9999  # very high limit to ensure the maxScore will always get a least a better node
+        #find the item with min score
+        result = None
+        for item, score in self.pQueue:
+            if (maxScore > score):
                 result = item
+                maxScore = score
         #Delete it
-        del self.pQueue[result]
+        self.pQueue.remove([result, maxScore])
         return result
 
     # returns the size of the current data structure (the number of elements)
