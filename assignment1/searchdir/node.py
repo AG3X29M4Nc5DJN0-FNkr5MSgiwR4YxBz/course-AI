@@ -28,7 +28,6 @@ class Node(object):
     # Check if current node state already exists in path from initial node
     def isRepeated(self):
         return self._findState(self.previous, self.state)
-
     # Extracts the sequence of states and actions that lead to current node
     def extractSolution(self):
         solution = []

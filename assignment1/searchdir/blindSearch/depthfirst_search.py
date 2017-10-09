@@ -10,21 +10,15 @@ def depthfirst_search(initialState):
     fringe = Stack()
     node = Node(initialState)
     fringe.push(node)
-    closed = []
     nb_visited = 0
+    closed = set()
     while(not fringe.isEmpty()):
         currentNode = fringe.pop()
         if (currentNode.state.isGoal()):
             return currentNode, nb_visited
-        listActions = currentNode.state.possibleActions()
+        closed.add(currentNode.state)
+        children = currentNode.expand()
         nb_visited += 1
-        children = []
-        #Create a new node, make the action and add the children list
-        for a in listActions:
-            #Copy node, make action then store in stack
-            childNode = Node(currentNode.state.executeAction(a))
-            children.append(childNode)
-        closed.append(currentNode)
         for node in children:
-            if(node not in closed and node not in fringe):
+            if(not(node.state in closed or node in fringe)):
                 fringe.push(node)

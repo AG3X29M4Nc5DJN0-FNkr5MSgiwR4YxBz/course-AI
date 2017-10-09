@@ -11,15 +11,16 @@ def breadthfirst_search(initialState):
     if(node.state.isGoal()):
         return node, nbVisited
     fringe.enqueue(node)
-    explored = []
+    #set are magic
+    closed = set()
     while(not fringe.isEmpty()):
         currentNode = fringe.dequeue()
-        explored.append(currentNode.state)
+        closed.add(currentNode.state)
         nbVisited = nbVisited + 1
         children = currentNode.expand()
         for child in children:
-            #check if child is in fringe or in explored
-            if(not(child in fringe or child.state in explored)):
+            #check if child is in closed 
+            if(not child.state in closed ):
                 if(child.state.isGoal()):
                     return child,nbVisited
                 fringe.enqueue(child)
