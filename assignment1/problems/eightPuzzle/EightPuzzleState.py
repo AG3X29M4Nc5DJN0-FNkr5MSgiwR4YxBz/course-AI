@@ -58,8 +58,6 @@ class EightPuzzleState(State):
 
     # applies the result of the move on the current state
     def executeAction(self, move):
-        #TODO can we do something less hard coded?
-        #TODO apply it on current state - remove child
         child = EightPuzzleState(self.configuration)
         index0 = child.configuration.index(0)
         #move left
@@ -134,13 +132,19 @@ class EightPuzzleState(State):
     # note that you can alternatively call heuristic1() and heuristic2() to test both heuristics with A*
     def heuristic(self):
         return self.heuristic1()
-        # return self.heuristic2()
+       # return self.heuristic2()
 
+
+
+    #To find heuristic we can think of the constraints:
+    #Can only switches tiles with the empty tile
+    #Can only switches tiles who are next to each others
 
     ## returns the value of your first heuristic for the current state
     # make sure to explain it clearly in your comment
 
     # returns the amount of wrongly placed tiles in the puzzle
+    # We ignored all the constraints!
     def heuristic1(self):
         goal = [0,1,2,3,4,5,6,7,8]
         heuristic1 = 0
@@ -154,9 +158,20 @@ class EightPuzzleState(State):
 
     # returns the value of your first heuristic for the current state
     # make sure to explain it clearly in your comment
-    def heuristic2(self, matrix, goal):
-        # TO COMPLETE
-        return -1
+
+    # We ignore the constraint that we need to switch with the empty tile
+    def heuristic2(self):
+        goal = [0,1,2,3,4,5,6,7,8]
+        heuristic2 = 0
+        for element in goal:
+            index = self.configuration.index(element)
+            #calculate the number of moves in y
+            #row nb - goal row nb
+            nbY = abs((int(index/3)) - (int(element/3)))
+            #calculate the number of moves in x
+            nbX = abs((index%3) - (element%3))
+            heuristic2 += nbY + nbX
+        return heuristic2
     def __hash__(self):
         return(hash(str(self.configuration)))
     def __eq__(self,other):
