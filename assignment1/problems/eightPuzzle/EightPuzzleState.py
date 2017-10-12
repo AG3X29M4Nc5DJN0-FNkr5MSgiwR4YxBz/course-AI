@@ -160,6 +160,7 @@ class EightPuzzleState(State):
     # make sure to explain it clearly in your comment
 
     # We ignore the constraint that we need to switch with the empty tile
+    # Manhattan Distance
     def heuristic2(self):
         goal = [0,1,2,3,4,5,6,7,8]
         heuristic2 = 0
