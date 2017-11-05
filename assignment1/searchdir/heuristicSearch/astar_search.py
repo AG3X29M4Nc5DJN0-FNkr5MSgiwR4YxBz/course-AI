@@ -7,9 +7,9 @@ from searchdir.util import PriorityQueue
 ## It must return the solution node and the number of visited nodes
 def astar_search(initialState):
     print('A* ------------------------------------')
-    open_set = PriorityQueue()
-    initial_node = Node(initialState, cost=1)
-    open_set.enqueue(initial_node, initial_node.f)
+    open_set = PriorityQueue(lambda node: node.f)
+    initial_node = Node(initialState, cost=0)
+    open_set.enqueue(initial_node)
     closed_set = set()
     nb_visited = 0
 
@@ -27,4 +27,4 @@ def astar_search(initialState):
             if neighbors.state in closed_set and cost < neighbors.g:  # should not need this if heuristic is consistent
                 closed_set.remove(neighbors)
             if neighbors not in open_set and neighbors.state not in closed_set:
-                open_set.enqueue(neighbors, neighbors.f)
+                open_set.enqueue(neighbors)
