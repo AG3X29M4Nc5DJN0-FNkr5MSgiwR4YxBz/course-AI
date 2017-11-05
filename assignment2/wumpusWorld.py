@@ -1,10 +1,3 @@
-### Author: Amal Zouaq
-### azouaq@uottawa.ca
-## Author: Hadi Abdi Ghavidel
-## habdi.cnlp@gmail.com
-
-import timeit
-
 import random
 class wumpusWorld():
     #The wumpus world is represented by a 4x4 matrix
