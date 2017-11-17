@@ -1,21 +1,46 @@
 import random
+
+class room():
+    def __init__(self):
+        self.pit = False
+        self.wumpus = False
+        self.gold = False
+        self.agent = False
+    def __str__(self):
+        s = "["
+        if(self.pit):
+            s+= "P"
+        if(self.wumpus):
+            s+= "W"
+        if(self.gold):
+            s+= "G"
+        if(self.agent):
+            s+= "A"
+        s+= "]"
+        return s
+
 class wumpusWorld():
     #The wumpus world is represented by a 4x4 matrix
     #Coordinates start from bottom left
     #  (0,3)...(3,3)
     #  (0,2)...(3,2)
     #  (0,1)...(3,1)
-    #  (0,0)...(3,0)
-    room = [[0] * 4 for i in range(4)] 
+    #  (0,0)...(3,0) 
     #Create a new wumpus world
     def __init__(self):
+        #Create rooms
+        self.r = []
+        for i in range(0,4):
+            self.r.append([])
+            for j in range(0,4):
+                self.r[i].append(room())
         #Place the wumpus, can never be at 1,1
         wX = 0
         wY = 0
         while(wX == 0 and wY == 0):
             wX = random.randint(0,3)
             wY = random.randint(0,3)
-        self.room[wX][wY] = 'W'
+        self.r[wX][wY].wumpus = True
 
         #Place the gold
         tX = wX
@@ -24,19 +49,21 @@ class wumpusWorld():
               (tX == 0 and tY == 0)):
             tX = random.randint(0,3)
             tY = random.randint(0,3)
-        self.room[tX][tY] = 'G'
+        self.r[tX][tY].gold = True
 
         #Generate pits
         for i in range(0,4):
             for j in range(0,4):
-                if(self.room[i][j] == 0):
+                if(self.r[i][j].wumpus == False and
+                   self.r[i][j].gold == False):
                     pit = random.random()
                     if(pit < 0.2):
-                        self.room[i][j] = 'P'
+                        self.r[i][j].pit = True
         #Make sure no pit at 0,0
-        self.room[0][0] = 0
+        self.r[0][0].pit = False
 
         #Initial agent configuration
+        self.r[0][0].agent = True
         self.aPos = [0,0]
         self.aDir = 'r'
 
@@ -51,20 +78,20 @@ class wumpusWorld():
         #Determine directly adjacent room
         roomList = []
         if(x > 0):
-            roomList.append(self.room[x-1][y])
+            roomList.append(self.r[x-1][y])
         if(x < 3):
-            roomList.append(self.room[x+1][y])
+            roomList.append(self.r[x+1][y])
         if(y > 0):
-            roomList.append(self.room[x][y-1])
+            roomList.append(self.r[x][y-1])
         if(y < 3):
-            roomList.append(self.room[x][y+1])
+            roomList.append(self.r[x][y+1])
         for r in roomList:
             #Stench
-            if(r == 'W'):
+            if(r.wumpus):
                 sensation[0] = "Stench"
-            elif(r == 'P'):
+            elif(r.pit):
                 sensation[1] = "Breeze"
-        if(self.room[x][y] == 'G'):
+        if(self.r[x][y].gold):
             sensation[2] = "Glitter"
         return sensation
 
@@ -72,9 +99,9 @@ class wumpusWorld():
     def printRoom(self):
         for j in range(3,-1,-1):
             for i in range(0,4):
-                print(str(self.room[i][j]), end=' ')
+                print(str(self.r[i][j]), end=' ')
             print('',end='\n')
-    #returns a boolean value that indicates if the current configuration is the same as the goal configuration
+
     #def isGoal(self):
     #def possibleActions(self):
     #def executeAction(self, move):
