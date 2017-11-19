@@ -135,7 +135,7 @@ class agent():
         elif action == 'grab_object':
             self.score -= 1
             if wumpusWorld.r[self.position[0], self.position[1].gold]:
-                self.carrying[1] = 1
+                self.carrying[1] = "Gold"
                 self.score += 1001
 
         elif action == 'fire_arrow':
@@ -171,3 +171,9 @@ class agent():
                     # be updated next percept update
 
         self.updatePercept(wumpusWorld, bump, scream)
+
+    def isCurrentCellGoal(self, wumpusWorld):
+        if self.carrying[1]:
+            return True
+        else:
+            return False
