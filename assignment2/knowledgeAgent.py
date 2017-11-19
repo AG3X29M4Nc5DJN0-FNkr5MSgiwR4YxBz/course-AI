@@ -95,8 +95,9 @@ class wumpusKB():
     #Use resolution rule
     def safe(self,x,y):
         pit = Symbol("P"+str(x)+str(y))
-        #wumpus = Symbol("W"+str(x)+str(y))
+        wumpus = Symbol("W"+str(x)+str(y))
         print(pl_resolution(self.kb,~pit))
+        print(pl_resolution(self.kb,~wumpus))
 #Return a list of adjacent rooms in the form [x,y]
 def adjacentRooms(x,y):
     r = []
