@@ -106,28 +106,68 @@ class agent():
                 self.orientation = 'r'
 
         elif action == 'move_forward':
+            bump = True
             self.score -= 1
             if self.orientation == 'r':
                 if self.position[0] < 3:  # if the x position of the agent is smaller than 3
                     self.position = [self.position[0]+1, self.position[1]]
                 else:
-                    self.updatePercept(wumpusWorld, bump=True)
+                    bump=True
 
             if self.orientation == 'u':
                 if self.position[1] < 3:  # if the y position of the agent is smaller than 3
                     self.position = [self.position[0], self.position[1]+1]
                 else:
-                    self.updatePercept(wumpusWorld, bump=True)
+                    bump=True
 
             if self.orientation == 'l':
                 if self.position[1] < 3:  # if the y position of the agent is smaller than 3
                     self.position = [self.position[0] - 1, self.position[1]]
                 else:
-                    self.updatePercept(wumpusWorld, bump=True)
+                    bump=True
 
             if self.orientation == 'd':
                 if self.position[1] < 3:  # if the y position of the agent is smaller than 3
                     self.position = [self.position[0], self.position[1]-1]
                 else:
-                    self.updatePercept(wumpusWorld, bump=True)
-                    
+                    bump=True
+
+        elif action == 'grab_object':
+            self.score -= 1
+            if wumpusWorld.r[self.position[0], self.position[1].gold]:
+                self.carrying[1] = 1
+                self.score += 1001
+
+        elif action == 'fire_arrow':
+            scream = False
+            self.score -= 10
+            self.carrying[0] = 0
+            if self.orientation == 'r':
+                # wumpus must be to the right of the agent and in the same row
+                if wumpusWorld.wX > self.position[0] and wumpusWorld.wY == self.position[1]:
+                    scream = True
+                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    # be updated next percept update
+
+            elif self.orientation == 'l':
+                # wumpus must be to the left of the agent and in the same row
+                if wumpusWorld.wX < self.position[0] and wumpusWorld.wY == self.position[1]:
+                    scream = True
+                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    # be updated next percept update
+
+            elif self.orientation == 'u':
+                # wumpus must be up of the agent and in the same column
+                if wumpusWorld.wY > self.position[1] and wumpusWorld.wX == self.position[0]:
+                    scream = True
+                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    # be updated next percept update
+
+            elif self.orientation == 'd':
+                # wumpus must be up of the agent and in the same column
+                if wumpusWorld.wY < self.position[1] and wumpusWorld.wX == self.position[0]:
+                    scream = True
+                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    # be updated next percept update
+
+        self.updatePercept(wumpusWorld, bump, scream)

@@ -35,18 +35,18 @@ class wumpusWorld():
             for j in range(0,4):
                 self.r[i].append(room())
         #Place the wumpus, can never be at 1,1
-        wX = 0
-        wY = 0
-        while(wX == 0 and wY == 0):
-            wX = random.randint(0,3)
-            wY = random.randint(0,3)
-        self.r[wX][wY].wumpus = True
+        self.wX = 0
+        self.wY = 0
+        while(self.wX == 0 and self.wY == 0):
+            self.wX = random.randint(0,3)
+            self.wY = random.randint(0,3)
+        self.r[self.wX][self.wY].wumpus = True
 
         #Place the gold
         #can never be on the wumpus
-        tX = wX
-        tY = wY
-        while((tX == wX and tY == wY) or
+        tX = self.wX
+        tY = self.wY
+        while((tX == self.wX and tY == self.wY) or
               (tX == 0 and tY == 0)):
             tX = random.randint(0,3)
             tY = random.randint(0,3)

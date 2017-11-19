@@ -15,8 +15,8 @@
       <file leaf-file-name="wumpusWorld.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/wumpusWorld.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1156">
-              <caret line="76" column="4" lean-forward="false" selection-start-line="76" selection-start-column="4" selection-end-line="76" selection-end-column="4" />
+            <state relative-caret-position="376">
+              <caret line="46" column="20" lean-forward="true" selection-start-line="46" selection-start-column="20" selection-end-line="46" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -25,9 +25,13 @@
       <file leaf-file-name="agent.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/agent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="132" column="20" lean-forward="true" selection-start-line="132" selection-start-column="20" selection-end-line="132" selection-end-column="20" />
-              <folding />
+            <state relative-caret-position="220">
+              <caret line="172" column="53" lean-forward="true" selection-start-line="172" selection-start-column="53" selection-end-line="172" selection-end-column="53" />
+              <folding>
+                <element signature="e#307#2775#0" expanded="false" />
+                <element signature="e#2816#3088#0" expanded="false" />
+                <element signature="e#3149#7051#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -50,10 +54,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="824" />
-    <option name="y" value="24" />
-    <option name="width" value="776" />
-    <option name="height" value="876" />
+    <option name="x" value="49" />
+    <option name="y" value="-4" />
+    <option name="width" value="1551" />
+    <option name="height" value="904" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -117,7 +121,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="824" y="24" width="776" height="876" extended-state="4" />
+    <frame x="49" y="-4" width="1551" height="904" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -150,17 +154,21 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/wumpusWorld.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1156">
-          <caret line="76" column="4" lean-forward="false" selection-start-line="76" selection-start-column="4" selection-end-line="76" selection-end-column="4" />
+        <state relative-caret-position="376">
+          <caret line="46" column="20" lean-forward="true" selection-start-line="46" selection-start-column="20" selection-end-line="46" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/agent.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="132" column="20" lean-forward="true" selection-start-line="132" selection-start-column="20" selection-end-line="132" selection-end-column="20" />
-          <folding />
+        <state relative-caret-position="220">
+          <caret line="172" column="53" lean-forward="true" selection-start-line="172" selection-start-column="53" selection-end-line="172" selection-end-column="53" />
+          <folding>
+            <element signature="e#307#2775#0" expanded="false" />
+            <element signature="e#2816#3088#0" expanded="false" />
+            <element signature="e#3149#7051#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
