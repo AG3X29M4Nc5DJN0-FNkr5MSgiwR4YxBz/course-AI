@@ -43,6 +43,7 @@ class wumpusWorld():
         self.r[wX][wY].wumpus = True
 
         #Place the gold
+        #can never be on the wumpus
         tX = wX
         tY = wY
         while((tX == wX and tY == wY) or
