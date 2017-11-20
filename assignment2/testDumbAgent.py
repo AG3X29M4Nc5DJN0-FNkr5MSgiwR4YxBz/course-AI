@@ -18,8 +18,10 @@ w0.r[0][0].agent = True
 #Create agent
 print("Creating Agent")
 a0 = agent(0,0,w0)
+
+w0.printRoom()
 while(not a0.terminated):
-    w0.printRoom()
     a0.dumbAgent(w0)
+    w0.printRoom()
     a0.status()
 
