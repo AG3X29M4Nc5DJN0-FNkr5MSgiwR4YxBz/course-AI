@@ -68,14 +68,14 @@ class wumpusWorld():
         self.aPos = [0,0]
         self.aDir = 'r'
 
-        self.sensation = self.getSensation(0,0)
-        print(self.sensation)
+        self.percept = self.getPercept(0,0)
+        print(self.percept)
 
-    #Sensation felt by the agent
+    #percept felt by the agent
     #[Stench,Breeze,Glitter,Bump,Scream]
-    #Return a sensation array for the room at x,y
-    def getSensation(self,x,y):
-        sensation = [0,0,0,0,0]
+    #Return a percept array for the room at x,y
+    def getPercept(self,x,y):
+        percept = [0,0,0,0,0]
         #Determine directly adjacent room
         roomList = []
         if(x > 0):
@@ -89,12 +89,12 @@ class wumpusWorld():
         for r in roomList:
             #Stench
             if(r.wumpus):
-                sensation[0] = "Stench"
+                percept[0] = "Stench"
             elif(r.pit):
-                sensation[1] = "Breeze"
+                percept[1] = "Breeze"
         if(self.r[x][y].gold):
-            sensation[2] = "Glitter"
-        return sensation
+            percept[2] = "Glitter"
+        return percept
 
 
     def printRoom(self):
@@ -109,5 +109,5 @@ class wumpusWorld():
     #def equals(self, other):
     #def cost(self, action):
 
-w = wumpusWorld()
-w.printRoom()
+#w = wumpusWorld()
+#w.printRoom()
