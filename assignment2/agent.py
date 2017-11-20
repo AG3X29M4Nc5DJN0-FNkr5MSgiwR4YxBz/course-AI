@@ -1,3 +1,5 @@
+from knowledgeAgent import *
+
 class agent():
     def __init__(self,x,y):
         self.position = [x, y]
@@ -14,51 +16,51 @@ class agent():
         # if the room doesn't end at the right and there is a pit add breeze
 
         if self.position[0] < 3 \
-                and wumpusWorld.r[self.position[0] + 1, self.position[1]].pit:
+                and wumpusWorld.r[self.position[0] + 1][self.position[1]].pit:
             self.percept[0] = "Breeze"
 
         # if the room doesn't end at the left and there is a pit add breeze
         elif self.position[0] > 0 \
-                and wumpusWorld.r[self.position[0] - 1, self.position[1]].pit:
+                and wumpusWorld.r[self.position[0] - 1][ self.position[1]].pit:
             self.percept[0] = "Breeze"
 
         # if the room doesn't end at the bottom and there is a pit add breeze
         elif self.position[1] > 0 \
-                and wumpusWorld.r[self.position[0], self.position[1] - 1].pit:
+                and wumpusWorld.r[self.position[0]][ self.position[1] - 1].pit:
             self.percept[0] = "Breeze"
 
         # if the room doesn't end at the top and there is a pit add breeze
         elif self.position[1] < 3 \
-                and wumpusWorld.r[self.position[0], self.position[1] + 1].pit:
+                and wumpusWorld.r[self.position[0]][ self.position[1] + 1].pit:
             self.percept[0] = "Breeze"
 
         # check for wumpus
         self.percept[1] = 0
         #pretty much same strategy as the breeze, I decided to split the if
         #statement to make it easier to read the code
-        if self.gent.position[0] < 3 \
-                and wumpusWorld.r[self.position[0] + 1, self.position[1]].wumpus:
+        if self.position[0] < 3 \
+                and wumpusWorld.r[self.position[0] + 1][ self.position[1]].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the left and there is a pit add breeze
         elif self.position[0] > 0 \
-                and wumpusWorld.r[self.position[0] - 1, self.position[1]].wumpus:
+                and wumpusWorld.r[self.position[0] - 1][ self.position[1]].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the bottom and there is a pit add breeze
         elif self.position[1] > 0 \
-                and wumpusWorld.r[self.position[0], self.position[1] - 1].wumpus:
+                and wumpusWorld.r[self.position[0]][ self.position[1] - 1].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the top and there is a pit add breeze
         elif self.position[1] < 3 \
-                and wumpusWorld.r[self.position[0], self.position[1] + 1].wumpus:
+                and wumpusWorld.r[self.position[0]][ self.position[1] + 1].wumpus:
             self.percept[1] = "Stench"
 
 
         #now, the GOOOOLD
         self.percept[2] = 0
-        if wumpusWorld.r[self.position[0], self.position[1]].gold:
+        if wumpusWorld.r[self.position[0]][ self.position[1]].gold:
             self.percept[2] = "Glitter"
 
         # for the bump
@@ -82,14 +84,15 @@ class agent():
             temp_action['grab_object'] = 1
 
     def performAction(self, action, wumpusWorld):
-
+        bump = False
+        scream = False
         if action == 'turn_left':
             self.score -= 1
             if self.orientation == 'r':
                 self.orientation = 'u'
-            if self.orientation == 'u':
+            elif self.orientation == 'u':
                 self.orientation = 'l'
-            if self.orientation == 'l':
+            elif self.orientation == 'l':
                 self.orientation = 'd'
             else:
                 self.orientation = 'r'
@@ -98,13 +101,12 @@ class agent():
             self.score -= 1
             if self.orientation == 'r':
                 self.orientation = 'd'
-            if self.orientation == 'd':
+            elif self.orientation == 'd':
                 self.orientation = 'l'
-            if self.orientation == 'l':
+            elif self.orientation == 'l':
                 self.orientation = 'u'
             else:
                 self.orientation = 'r'
-
         elif action == 'move_forward':
             bump = True
             self.score -= 1
@@ -121,13 +123,13 @@ class agent():
                     bump=True
 
             if self.orientation == 'l':
-                if self.position[1] < 3:  # if the y position of the agent is smaller than 3
+                if self.position[0] > 0:  # if the x position of the agent is greater than 0
                     self.position = [self.position[0] - 1, self.position[1]]
                 else:
                     bump=True
 
             if self.orientation == 'd':
-                if self.position[1] < 3:  # if the y position of the agent is smaller than 3
+                if self.position[1] > 0:  # if the y position of the agent is greater than 0
                     self.position = [self.position[0], self.position[1]-1]
                 else:
                     bump=True
@@ -139,7 +141,6 @@ class agent():
                 self.score += 1001
 
         elif action == 'fire_arrow':
-            scream = False
             self.score -= 10
             self.carrying[0] = 0
             if self.orientation == 'r':
