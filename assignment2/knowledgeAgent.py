@@ -1,14 +1,16 @@
 from logic import *
 from utils import *
 from wumpusWorld import *
+#A knowledge base for a wumpusWorld
 class wumpusKB():
     def __init__(self, wumpusWorld):
-        #Create empty kb
         self.kb = PropKB()
         #Add in the KB basic information
+        
         #No pit and wumpus at (0,0)
         self.kb.tell(expr("~P00"))
         self.kb.tell(expr("~W00"))
+        
         #Add the rules of the game
         #If square x,y is breezy <==> (adjacent are pits)
         for i in range(0,4):
@@ -101,18 +103,18 @@ class wumpusKB():
     #Take current percept as a list and update KB
     #[Breeze,Stench,Glitter,Bump,Scream]
     def addPercept(self,percept,x,y):
-        #If we dont smell Stench, adjacents squares are safe
+        #Tell KB we felt BXY or ~BXY (breeze at cell(x,y) )
         if(percept[0] == 0):
             self.kb.tell("~B"+str(x)+str(y))
         else:
             self.kb.tell(expr("B"+str(x)+str(y)))
-        
+        #Tell KB we felt SXY or ~SXY (Stench at cell(x,y) )
         if(percept[1] == 0):
             self.kb.tell("~S"+str(x)+str(y))
         else:
             self.kb.tell(expr("S"+str(x)+str(y)))
 
-
+        #Tell KB if we saw glitter or not at cell (x,y)
         if(percept[2] == 0):
             self.kb.tell("~G"+str(x)+str(y))
         else:
@@ -121,10 +123,13 @@ class wumpusKB():
     #Return true if room x,y is safe (no wumpus and no pit)
     def safe(self,x,y):
         #This is the expr we want to test if KB entails
+        # ( ~Wxy & ~Pxy )
         safeExpr = expr("~W"+str(x)+str(y)+" & "+"~P"+str(x)+str(y))
         #Tell kb the negation of the expr we want to see if it entails
         self.kb.tell(~safeExpr)
 
+        #Build elements for dpll
+        #could improve
         clauseList = self.kb.clauses
         #build symbol list
         s = []
@@ -136,16 +141,20 @@ class wumpusKB():
         result = dpll(clauseList,s,{})
         #Remove our test safeExpr
         self.kb.retract(~safeExpr)
+        #Uncomment to print the values of the dpll model
   #      for key in result.keys():
   #        print(str(key) + " : " + str(result[key]))
+
         #Result = false if there was a contradiction => KB entails our safeExpr
         if(result == False):
             return True
         else:
             return False
-    #Same as before, except we test if (Pij | Wij) is NOT entails
+  
+    #Same as before, except we test if (Pij | Wij) is NOT entailed by KB
     def possiblySafe(self,x,y):
          #This is the expr we want to test if KB entails
+         #( Wxy | Pxy)
         safeExpr = expr("W"+str(x)+str(y)+" | "+"P"+str(x)+str(y))
         #Tell kb the negation of the expr we want to see if it entails
         self.kb.tell(~safeExpr)
@@ -163,7 +172,10 @@ class wumpusKB():
         self.kb.retract(~safeExpr)
         #for key in result.keys():
         #   print(str(key) + " : " + str(result[key]))
+
         #Result = false if there was a contradiction => KB entails our safeExpr
+        #We return the negation of entails, we want to return True if KB DOES NOT entails our expr
+        #in other words, kb cannot prove that the square is unsafe
         if(result == False):
             return False
         else:
@@ -183,6 +195,8 @@ def adjacentRooms(x,y):
         r.append([x,y+1])
     return r
         
+
+#Uncomment to test a random world
 
 #world = wumpusWorld()
 #wKB = wumpusKB(world)

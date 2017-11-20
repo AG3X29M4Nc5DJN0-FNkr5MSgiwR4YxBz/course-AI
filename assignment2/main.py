@@ -93,8 +93,24 @@ print("1.1 safe : " +str(wKB0.safe(1,1)))
 print("2,0 safe : " +str(wKB0.safe(2,0)))
 print("2,1 safe : " +str(wKB0.safe(2,1)))
 
+print("2,0 possiblysafe : "+str(wKB0.possiblySafe(2,0)))
 
 
+#Walk to 1,2
+
+a0.performAction("turn_left",w0)
+a0.performAction("move_forward",w0)
+print(a0.percept)
+print(a0.position)
+
+wKB0.addPercept(a0.percept,a0.position[0],a0.position[1])
+print("0,2 safe : " +str(wKB0.safe(0,2)))
+print("1,3 safe : " +str(wKB0.safe(1,3)))
+print("2,2 safe : " +str(wKB0.safe(2,2)))
+
+print("0,2 Psafe : " +str(wKB0.possiblySafe(0,2)))
+print("1,3 Psafe : " +str(wKB0.possiblySafe(1,3)))
+print("2,2 Psafe : " +str(wKB0.possiblySafe(2,2)))
 
 
 
