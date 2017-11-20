@@ -12,8 +12,9 @@ class agent():
         self.score = 0
         self.carrying = [1, 0] # index 0 is arrow, 1 is goooold
         self.percept = [0, 0, 0, 0, 0]
-        self.kb = wumpus_kb(wumpusWorld)
+        self.kb = wumpusKB(wumpusWorld)
         self.plan = []
+        self.terminated = False
     def updatePercept(self, wumpusWorld, bump=False, scream=False):
         # bump and scream are going to be boolean values
 
@@ -98,7 +99,7 @@ class agent():
         if self.percept[2]: # if there is glitter
             self.performAction('grab_object', wumpusWorld)
         elif self.percept[1] and self.carrying[0]: # if there is a stench and still has arrow
-            self.performAction('fire_arrow')
+            self.performAction('fire_arrow', wumpusWorld)
         else:  # perform random movement action
             selector = random.randint(0, 2)
             choices = ['turn_left', 'turn_right', 'move_forward']
@@ -111,6 +112,8 @@ class agent():
     def performAction(self, action, wumpusWorld):
         # if action is to turn left, it will update the orientation
         # and percepts shouldnt change
+        bump = False
+        scream = False
         if action == 'turn_left':
             self.score -= 1
             if self.orientation == 'r':
@@ -136,8 +139,9 @@ class agent():
         # the agent will try to move forward in the direction it is currently facing
         # if there is a wall, the bump percept is added
         elif action == 'move_forward':
-            bump = False
             self.score -= 1
+            oldX = self.position[0]
+            oldY = self.position[1]
             if self.orientation == 'r':
                 if self.position[0] < 3:  # if the x position of the agent is smaller than 3
                     self.position = [self.position[0]+1, self.position[1]]
@@ -161,14 +165,24 @@ class agent():
                     self.position = [self.position[0], self.position[1]-1]
                 else:
                     bump=True
+            #Tell world we moved to cell x,y
+            #TODO improve this
+            wumpusWorld.moveAgent(oldX,oldY,self.position[0], self.position[1])
+            #If the current location after moving is dangerous...we lose
+            if(wumpusWorld.isDanger(self.position[0],self.position[1])):
+                    self.score -= 1000
+                    self.terminated = True
         # the agent will try to grab an object
         # if there is nothing, nothing happens
         # if the gold is there it should add it to its inventory
         elif action == 'grab_object':
             self.score -= 1
-            if wumpusWorld.r[self.position[0], self.position[1]].gold:
+            if wumpusWorld.r[self.position[0]][self.position[1]].gold:
                 self.carrying[1] = "Gold"
                 self.score += 1001
+                #If we grab gold the simulation finish
+                self.terminated = True
+
 
         # the agent will fire an arrow if it still is carrying one
         # if the wumpus is facing the agent, the wumpus will die and
@@ -206,6 +220,18 @@ class agent():
                     # be updated next percept update
 
         self.updatePercept(wumpusWorld, bump, scream)
+    #Print agent status
+    def status(self):
+        if(self.terminated):
+            print("[-] AGENT TERMINATED")
+            print("SCORE : " + str(self.score))
+        else:
+            print("[+] Agent status")
+            print("[+] Current position (x,y) : "+str(self.position[0]) + ","+str(self.position[1]))
+            print("[+] Current direction      : "+str(self.orientation))
+            print("[+] Current score          : "+str(self.score))
+            print("[+] Current percept        : "+str(self.percept))
+
 
     # def expandAction(self, initial, actions):
     #     # returns a list of possible outcomes for every possible actions

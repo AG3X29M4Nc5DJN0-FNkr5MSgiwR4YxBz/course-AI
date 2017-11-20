@@ -5,6 +5,8 @@ from knowledgeAgent import *
 #Create a world and an agent
 #Simulation 0
 
+#THIS IS A TEST FILE TO TEST BY HAND SIMULATIONs
+
 w0 = wumpusWorld()
 #Set the world
 for i in range(0,4):

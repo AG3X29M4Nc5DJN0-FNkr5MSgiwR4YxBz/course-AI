@@ -34,6 +34,10 @@ class wumpusWorld():
             self.r.append([])
             for j in range(0,4):
                 self.r[i].append(room())
+        #Place the agent ,always at 0,0
+        self.r[0][0].agent = True
+
+
         #Place the wumpus, can never be at 1,1
         self.wX = 0
         self.wY = 0
@@ -102,12 +106,23 @@ class wumpusWorld():
             for i in range(0,4):
                 print(str(self.r[i][j]), end=' ')
             print('',end='\n')
+    #Move an agent from a space to another
+    def moveAgent(self,oldX,oldY,x,y):
+        self.r[oldX][oldY].agent = False
+        self.r[x][y].agent = True
+    #Return if the current cell is dangerous
+    def isDanger(self,x,y):
+        if(self.r[x][y].wumpus == True or self.r[x][y].pit == True):
+            return True
+        else:
+            return False
 
     #def isGoal(self):
     #def possibleActions(self):
     #def executeAction(self, move):
     #def equals(self, other):
     #def cost(self, action):
+
 
 #w = wumpusWorld()
 #w.printRoom()

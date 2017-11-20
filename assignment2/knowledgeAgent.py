@@ -22,7 +22,7 @@ class wumpusKB():
                     body += "P"+str(room[0])+str(room[1])+" | "
                 body = body[:-2] + ")"
                 #Add the double implication about pits to the kb
-                print(expr(head + " <=> " + body))
+#                print(expr(head + " <=> " + body))
                 self.kb.tell(expr(head + " <=> " + body))
         #Add rules for wumpus S <=> (adjacent are wumpus)
         for i in range(0,4):
@@ -33,7 +33,7 @@ class wumpusKB():
                 for room in p:
                    body += "W"+str(room[0])+str(room[1])+" | "
                 body = body[:-2] + ")"
-                print(expr(head+ " <=> "+ body))
+#                print(expr(head+ " <=> "+ body))
                 #Add the double implication about pits to the kb
                 self.kb.tell(expr(head + " <=> " + body))
         #If we have a wumpus, then all adjacent rooms have stench
@@ -64,7 +64,7 @@ class wumpusKB():
                     for room in adjacentRooms(i,j):
                         body += "~W"+str(room[0])+str(room[1])+" & "
                     body = body[:-2] + ")"
-                    print(expr(head + " <=> "+body))
+#                    print(expr(head + " <=> "+body))
                     self.kb.tell(expr(head + " <=> " + body))
         #If we dont feel breeze then no pit in adjacent rooms
         for i in range(0,4):
@@ -74,7 +74,7 @@ class wumpusKB():
                     for room in adjacentRooms(i,j):
                         body += "~P"+str(room[0])+str(room[1])+" & "
                     body = body[:-2] + ")"
-                    print(expr(head + " <=> "+body))
+#                    print(expr(head + " <=> "+body))
                     self.kb.tell(expr(head + " <=> " + body))
  
 
