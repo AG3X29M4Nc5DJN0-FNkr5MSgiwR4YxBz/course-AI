@@ -1,3 +1,6 @@
+from utils import *
+from logic import *
+
 class agent():
     def __init__(self,x,y):
         self.position = [x, y]
@@ -177,3 +180,28 @@ class agent():
             return True
         else:
             return False
+
+    def whichAction(self, percept):  # hybrid wumpus agent method
+
+        percept_sentence = []
+
+        if percept[0] is not 0:
+            percept_sentence.append(Symbol('Breeze'))
+        else:
+            percept_sentence.append(~Symbol('Breeze'))
+        if percept[1] is not 0:
+            percept_sentence.append(Symbol('Stench'))
+        else:
+            percept_sentence.append(~Symbol('Stench'))
+        if percept[2] is not 0:
+            percept_sentence.append(Symbol('Glitter'))
+        else:
+            percept_sentence.append(~Symbol('Glitter'))
+        if percept[3] is not 0:
+            percept_sentence.append(Symbol('Bump'))
+        else:
+            percept_sentence.append(~Symbol('Bump'))
+        if percept[4] is not 0:
+            percept_sentence.append(Symbol('Scream'))
+        else:
+            percept_sentence.append(~Symbol('Scream'))
