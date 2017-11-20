@@ -23,51 +23,51 @@ class agent():
         # if the room doesn't end at the right and there is a pit add breeze
 
         if self.position[0] < 3 \
-                and wumpusWorld.r[self.position[0] + 1, self.position[1]].pit:
+                and wumpusWorld.r[self.position[0] + 1][self.position[1]].pit:
             self.percept[0] = "Breeze"
 
         # if the room doesn't end at the left and there is a pit add breeze
         elif self.position[0] > 0 \
-                and wumpusWorld.r[self.position[0] - 1, self.position[1]].pit:
+                and wumpusWorld.r[self.position[0] - 1][ self.position[1]].pit:
             self.percept[0] = "Breeze"
 
         # if the room doesn't end at the bottom and there is a pit add breeze
         elif self.position[1] > 0 \
-                and wumpusWorld.r[self.position[0], self.position[1] - 1].pit:
+                and wumpusWorld.r[self.position[0]][ self.position[1] - 1].pit:
             self.percept[0] = "Breeze"
 
         # if the room doesn't end at the top and there is a pit add breeze
         elif self.position[1] < 3 \
-                and wumpusWorld.r[self.position[0], self.position[1] + 1].pit:
+                and wumpusWorld.r[self.position[0]][ self.position[1] + 1].pit:
             self.percept[0] = "Breeze"
 
         # check for wumpus
         self.percept[1] = 0
         #pretty much same strategy as the breeze, I decided to split the if
         #statement to make it easier to read the code
-        if self.gent.position[0] < 3 \
-                and wumpusWorld.r[self.position[0] + 1, self.position[1]].wumpus:
+        if self.position[0] < 3 \
+                and wumpusWorld.r[self.position[0] + 1][ self.position[1]].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the left and there is a pit add breeze
         elif self.position[0] > 0 \
-                and wumpusWorld.r[self.position[0] - 1, self.position[1]].wumpus:
+                and wumpusWorld.r[self.position[0] - 1][ self.position[1]].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the bottom and there is a pit add breeze
         elif self.position[1] > 0 \
-                and wumpusWorld.r[self.position[0], self.position[1] - 1].wumpus:
+                and wumpusWorld.r[self.position[0]][ self.position[1] - 1].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the top and there is a pit add breeze
         elif self.position[1] < 3 \
-                and wumpusWorld.r[self.position[0], self.position[1] + 1].wumpus:
+                and wumpusWorld.r[self.position[0]][ self.position[1] + 1].wumpus:
             self.percept[1] = "Stench"
 
 
         #now, the GOOOOLD
         self.percept[2] = 0
-        if wumpusWorld.r[self.position[0], self.position[1]].gold:
+        if wumpusWorld.r[self.position[0]][ self.position[1]].gold:
             self.percept[2] = "Glitter"
 
         # for the bump
@@ -109,7 +109,6 @@ class agent():
         # bumps and scream and everything.
 
     def performAction(self, action, wumpusWorld):
-
         # if action is to turn left, it will update the orientation
         # and percepts shouldnt change
         if action == 'turn_left':
@@ -176,7 +175,6 @@ class agent():
         # get removed from the world, im not sure if the stenches are
         # removed too
         elif action == 'fire_arrow':
-            scream = False
             self.score -= 10
             self.carrying[0] = 0
             if self.orientation == 'r':
