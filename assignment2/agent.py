@@ -9,6 +9,7 @@ class agent():
         self.position = [x, y]
         self.orientation = "r"
         self.score = 0
+        self.finalScore = 0
         self.carrying = [1, 0] # index 0 is arrow, 1 is goooold
         self.percept = [0, 0, 0, 0, 0]
         self.kb = wumpusKB(wumpusWorld)
@@ -62,6 +63,7 @@ class agent():
         self.percept[1] = 0
         #pretty much same strategy as the breeze, I decided to split the if
         #statement to make it easier to read the code
+
         if self.position[0] < 3 \
                 and wumpusWorld.r[self.position[0] + 1][ self.position[1]].wumpus:
             self.percept[1] = "Stench"
@@ -253,13 +255,13 @@ class agent():
                     bump=True
 
             elif self.orientation == 'l':
-                if self.position[1] < 3:  # if the y position of the agent is smaller than 3
+                if self.position[0] > 0:  # if the x position of the agent is smaller than 3
                     self.position = [self.position[0] - 1, self.position[1]]
                 else:
                     bump=True
 
             elif self.orientation == 'd':
-                if self.position[1] < 3:  # if the y position of the agent is smaller than 3
+                if self.position[1] > 0:  # if the y position of the agent is smaller than 3
                     self.position = [self.position[0], self.position[1]-1]
                 else:
                     bump=True
@@ -293,28 +295,28 @@ class agent():
                 # wumpus must be to the right of the agent and in the same row
                 if wumpusWorld.wX > self.position[0] and wumpusWorld.wY == self.position[1]:
                     scream = True
-                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    wumpusWorld.killWumpus()  # kill the wumpus, the stenches will
                     # be updated next percept update
 
             elif self.orientation == 'l':
                 # wumpus must be to the left of the agent and in the same row
                 if wumpusWorld.wX < self.position[0] and wumpusWorld.wY == self.position[1]:
                     scream = True
-                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    wumpusWorld.killWumpus()  # kill the wumpus, the stenches will
                     # be updated next percept update
 
             elif self.orientation == 'u':
                 # wumpus must be up of the agent and in the same column
                 if wumpusWorld.wY > self.position[1] and wumpusWorld.wX == self.position[0]:
                     scream = True
-                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    wumpusWorld.killWumpus()  # kill the wumpus, the stenches will
                     # be updated next percept update
 
             elif self.orientation == 'd':
                 # wumpus must be up of the agent and in the same column
                 if wumpusWorld.wY < self.position[1] and wumpusWorld.wX == self.position[0]:
                     scream = True
-                    wumpusWorld.r[wumpusWorld.wX, wumpusWorld.wY].wumpus = False  # kill the wumpus, the stenches will
+                    wumpusWorld.killWumpus()  # kill the wumpus, the stenches will
                     # be updated next percept update
 
         self.updatePercept(wumpusWorld, bump, scream)
@@ -323,6 +325,7 @@ class agent():
         if(self.terminated):
             print("[-] AGENT TERMINATED")
             print("SCORE : " + str(self.score))
+            self.finalScore = self.score
         else:
             print("[+] Agent status")
             print("[+] Current position (x,y) : "+str(self.position[0]) + ","+str(self.position[1]))

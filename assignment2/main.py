@@ -2,6 +2,22 @@ from wumpusWorld import *
 from agent import *
 from knowledgeAgent import *
 
+wTest = wumpusWorld()
+aTest = agent(0, 0, wTest)
+score = 0
+for i in range(10000):
+    wTest = wumpusWorld()
+    aTest = agent(0, 0, wTest)
+    while not aTest.terminated:
+        aTest.dumbAgent(wTest)
+        wTest.printRoom()
+        aTest.status()
+    score += aTest.finalScore
+score /= 2
+print("Average score: {}".format(score))
+exit()
+
+
 #Create a world and an agent
 #Simulation 0
 
@@ -22,7 +38,7 @@ w0.r[3][3].pit = True
 w0.printRoom()
 #Create agent
 print("Creating Agent")
-a0 = agent(0,0)
+a0 = agent(0,0, w0)
 a0.updatePercept(w0)
 print(a0.percept)
 print(a0.position)
