@@ -7,6 +7,8 @@ from exploration import *
 
 #check performance
 import time
+#for logging
+import sys
 
 
 class agent():
@@ -324,6 +326,8 @@ class agent():
             print("Movement : " + str(self.movement))
             print("TIME  : " + str(self.endTime - self.startTime))
             self.finalScore = self.score
+            #Flush stdout so we can see it in the log.txt file
+            sys.stdout.flush()
         else:
             print("[+] Agent status")
             print("[+] Current position (x,y) : "+str(self.position[0]) + ","+str(self.position[1]))

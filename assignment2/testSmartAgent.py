@@ -93,6 +93,7 @@ for i in range(10000):
     while(not a.terminated):
         a.astar_Agent(w)
     a.status()
+    print("")
     scoreTotal += a.finalScore
 
 #print("Average payoff: {}".format(scoreTotal))
