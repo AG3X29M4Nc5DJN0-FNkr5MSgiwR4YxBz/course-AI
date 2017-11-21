@@ -1,6 +1,9 @@
 from wumpusWorld import *
 from agent import *
 from knowledgeAgent import *
+import random
+
+random.seed(1234)
 
 w0 = wumpusWorld()
 #Set the world
@@ -28,6 +31,7 @@ s0_Score = a0.score
 
 counter = 0
 scoreList = []
+scoreTotal = 0
 while(counter < 10000):
     #Create a new world
     w = wumpusWorld()
@@ -35,15 +39,16 @@ while(counter < 10000):
     a = agent(0,0,w)
     #Do the testDumbAgent simulation
     while(not a.terminated):
-        a.dumbAgent(w0)
+        a.dumbAgent(w)
     #once finish, print status
     a.status()
+    scoreTotal += a.finalScore
 
-    #Add score to an array
-    scoreList.append(a.score)
-    counter += 1
+print("Average payoff: {}".format(scoreTotal))
+    # scoreList.append(a.score)
+    # counter += 1
 
-print("Final results ")
-print("Score sim0 = "+str(s0_Score))
-print(scoreList)
+# print("Final results ")
+# print("Score sim0 = "+str(s0_Score))
+# print(scoreList)
 

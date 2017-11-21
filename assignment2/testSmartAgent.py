@@ -32,21 +32,18 @@ w0 = wumpusWorld()
 #w0.r[1][1].pit = True
 #w0.r[2][3].gold = True
 #w0.r[3][2].pit = True
+scoreTotal = 0
+for i in range(10000):
+    w = wumpusWorld()
+    a = agent(0, 0, w)
+    while(not a.terminated):
+        a.astar_Agent(w)
+    a.status()
+    scoreTotal += a.finalScore
 
+print("Average payoff: {}".format(scoreTotal))
+#print(a0.kb.kb.clauses)
 
-#Create agent
-print("Creating Agent")
-a0 = agent(0,0,w0)
-
-w0.printRoom()
-while(not a0.terminated):
-    a0.astar_Agent(w0)
-    w0.printRoom()
-    a0.status()
-
-print(a0.kb.kb.clauses)
-
-s0_Score = a0.score
 
 #counter = 0
 #scoreList = []

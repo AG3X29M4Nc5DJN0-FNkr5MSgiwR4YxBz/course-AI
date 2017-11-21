@@ -65,22 +65,22 @@ class agent():
         #statement to make it easier to read the code
 
         if self.position[0] < 3 \
-                and wumpusWorld.r[self.position[0] + 1][ self.position[1]].wumpus:
+                and wumpusWorld.r[self.position[0] + 1][self.position[1]].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the left and there is a pit add breeze
         elif self.position[0] > 0 \
-                and wumpusWorld.r[self.position[0] - 1][ self.position[1]].wumpus:
+                and wumpusWorld.r[self.position[0] - 1][self.position[1]].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the bottom and there is a pit add breeze
         elif self.position[1] > 0 \
-                and wumpusWorld.r[self.position[0]][ self.position[1] - 1].wumpus:
+                and wumpusWorld.r[self.position[0]][self.position[1] - 1].wumpus:
             self.percept[1] = "Stench"
 
         # if the room doesn't end at the top and there is a pit add breeze
         elif self.position[1] < 3 \
-                and wumpusWorld.r[self.position[0]][ self.position[1] + 1].wumpus:
+                and wumpusWorld.r[self.position[0]][self.position[1] + 1].wumpus:
             self.percept[1] = "Stench"
 
 
@@ -198,7 +198,7 @@ class agent():
 
         if self.percept[2]: # if there is glitter
             self.performAction('grab_object', wumpusWorld)
-        elif self.percept[1] and self.carrying[0]: # if there is a stench and still has arrow
+        elif self.percept[1] and self.carrying[0] == 1: # if there is a stench and still has arrow
             self.performAction('fire_arrow', wumpusWorld)
         else:  # perform random movement action
             selector = random.randint(0, 2)
@@ -276,10 +276,9 @@ class agent():
         # if there is nothing, nothing happens
         # if the gold is there it should add it to its inventory
         elif action == 'grab_object':
-            self.score -= 1
             if wumpusWorld.r[self.position[0]][self.position[1]].gold:
                 self.carrying[1] = "Gold"
-                self.score += 1001
+                self.score += 1000
                 #If we grab gold the simulation finish
                 self.terminated = True
 
@@ -289,6 +288,10 @@ class agent():
         # get removed from the world, im not sure if the stenches are
         # removed too
         elif action == 'fire_arrow':
+            if wumpusWorld.wX is None or wumpusWorld.wY is None:
+                self.score -= 10
+                print("NO ARROW")
+                return
             self.score -= 10
             self.carrying[0] = 0
             if self.orientation == 'r':
