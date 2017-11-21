@@ -8,6 +8,7 @@ from exploration import *
 #check performance
 import time
 
+
 class agent():
     def __init__(self,x,y,wumpusWorld):
         self.position = [x, y]
@@ -205,8 +206,6 @@ class agent():
         end0 = time.clock()
         print("Time spend in 1 iteration of astar : "+str(end0-start0))
 
-
-
     def dumbAgent(self, wumpusWorld):
         # performs actions at random
 
@@ -280,8 +279,8 @@ class agent():
                 else:
                     bump=True
             #Tell world we moved to cell x,y
-            #TODO improve this
-            wumpusWorld.moveAgent(oldX,oldY,self.position[0], self.position[1])
+            #TODO I don't see how better we can make that be ...
+            wumpusWorld.moveAgent(self.position[0], self.position[1])
             #If the current location after moving is dangerous...we lose
             if(wumpusWorld.isDanger(self.position[0],self.position[1])):
                     self.score -= 1000
@@ -302,10 +301,6 @@ class agent():
         # get removed from the world, im not sure if the stenches are
         # removed too
         elif action == 'fire_arrow':
-            if wumpusWorld.wX is None or wumpusWorld.wY is None:
-                self.score -= 10
-                print("NO ARROW")
-                return
             self.score -= 10
             self.carrying[0] = 0
             if self.orientation == 'r':
@@ -350,3 +345,190 @@ class agent():
             print("[+] Current score          : "+str(self.score))
             print("[+] Current percept        : "+str(self.percept))
 
+<<<<<<< HEAD
+=======
+    #Return a list of actions to go from currentPosition
+    #To goal position (given by goal : [x,y])
+    def makePlan(self, goal):
+        plan = []
+        self.simulationOrientation = self.orientation
+        currentCell = self.findGoalBFS(self.position,goal)
+        #From the goal cell, build in a list the trail of position
+        trail = [currentCell.position]
+        while(currentCell.previous != None):
+            trail.insert(0,currentCell.previous.position)
+            currentCell = currentCell.previous
+
+        #From trail, build plan
+        #Remove first element of the trail, it should be our current position
+        assert(trail[0] == self.position)
+        #Now, for each next cell, we should be able to go to it
+        for i in range(0,len(trail)-1):
+            #For each pair, we add to plan the path to go from one to the other
+            plan += self.pathAdjacentPosition(trail[i],trail[i+1])
+        return(plan)
+    #return 0 if safe
+    #return 1 if possibly safe
+    #return 2 if unsafe
+    def cellScore(self,node):
+        if(self.kb.safe(node.position[0],node.position[1])):
+            return 0
+        elif(self.kb.possiblySafe(node.position[0],node.position[1])):
+            return 1
+        else:
+            return 2
+    #Return a list of actions to go from one adjacent position to the other  
+    def pathAdjacentPosition(self,p0,p1):
+        x0 = p0[0]
+        y0 = p0[1]
+        x1 = p1[0]
+        y1 = p1[1]
+        #First, check that the distance between the two position is 1
+        dX = abs(x1-x0)
+        dY = abs(y1-y0)
+        plan = []
+        assert(dX+dY == 1)
+        #Now, check the direction we should face
+        if(x1 > x0):
+            desiredDirection = 'r'
+        elif(y1 > y0):
+            desiredDirection = 'u'
+        elif(y0 > y1):
+            desiredDirection = 'd'
+        else:
+            desiredDirection = 'l'
+    
+        #Calculate the action to do to be in the right direction
+        #TODO improve if we have time
+        #While we dont face the right wait, turn right until we do
+        while(not(self.simulationOrientation == desiredDirection)):
+            self.simulationOrientation = rotateDirectionRight(self.simulationOrientation)
+            plan.append("turn_right")
+        #now we just need to move forward
+        plan.append("move_forward")
+        return plan
+
+    #quickly made bfs with cell class
+    #return the goal cell with .previous containing the path
+    def findGoalBFS(self,initialPosition,goal): 
+        pFringe = []
+        node = nodeCell(initialPosition)
+        goal = nodeCell(goal)
+        #If we are already at the goal, return empty plan
+        if(node == goal):
+            return node 
+        pFringe.insert(0,(node))
+        closed = [] 
+        while(len(pFringe) > 0):
+            currentNode = pFringe.pop()
+            closed.append(currentNode.position)
+            children = currentNode.expand()
+            for child in children:
+                if(child.position == goal.position):
+                    return child
+                #If its not goal and not already visited by our agent, we dont explore
+                if(child.position not in closed and child in self.closed_set):
+                     pFringe.insert(0,child)
+
+    #quickly made bfs with cell class
+    #return the goal cell with .previous containing the path
+    def findGoalBFS(self,initialPosition,goal):
+        pFringe = []
+        node = nodeCell(initialPosition)
+        goal = nodeCell(goal)
+         #If we are already at the goal, return empty plan
+        if(node == goal):
+            return node
+        pFringe.insert(0,(node))
+        closed = []
+        while(len(pFringe) > 0):
+            currentNode = pFringe.pop()
+            closed.append(currentNode.position)
+            children = currentNode.expand()
+            for child in children:
+                #If child is not already visited in our BFS
+                if(child.position not in closed):
+                    if(child.position == goal.position):
+                        return child
+                    #If its not goal and not already visited by our agent, we dont explore
+                    if(child.position not in closed and child not in self.closed_set):
+                        pFringe.insert(0,child)
+
+    #Return a list of actions to go from one adjacent position to the other
+    def pathAdjacentPosition(self,p0,p1):
+        x0 = p0[0]
+        y0 = p0[1]
+        x1 = p1[0]
+        y1 = p1[1]
+        #First, check that the distance between the two position is 1
+        dX = abs(x1-x0)
+        dY = abs(y1-y0)
+        plan = []
+        assert(dX+dY == 1)
+        #Now, check the direction we should face
+        if(x1 > x0):
+            desiredDirection = 'r'
+        elif(y1 > y0):
+            desiredDirection = 'u'
+        elif(y0 > y1):
+            desiredDirection = 'd'
+        else:
+            desiredDirection = 'l'
+
+        #Calculate the action to do to be in the right direction
+        #While we dont face the right wait, turn right until we do
+        while(not(self.simulationOrientation == desiredDirection)):
+            self.simulationOrientation = rotateDirectionRight(self.simulationOrientation)
+            if self.simulationOrientation == 'u' and desiredDirection == 'l' \
+            or self.simulationOrientation == 'l' and desiredDirection == 'd' \
+            or self.simulationOrientation == 'd' and desiredDirection == 'r' \
+            or self.simulationOrientation == 'r' and desiredDirection == 'u':
+                plan.apped("turn_left")     # you only need to turn left once, if desired orientation is behind, 2 turns
+            else:
+                plan.append("turn_right")
+        #now we just need to move forward
+        plan.append("move_forward")
+        return plan
+
+#Take a direction as char and return the direction if we turn right
+def rotateDirectionRight(direction):
+    if(direction == 'r'):
+        return 'd'
+    elif(direction == 'd'):
+        return 'l'
+    elif(direction == 'l'):
+        return 'u'
+    elif(direction == 'u'):
+        return 'r'
+
+#return 0 if safe
+#return 1 if possibly safe
+#return 2 if unsafe
+def cellScore(kb,node):
+    if(kb.safe(node.position[0],node.position[1])):
+        return 0
+    elif(kb.possiblySafe(node.position[0],node.position[1])):
+        return 1
+    else:
+        return 2
+
+#Node object for makeplan search
+class nodeCell():
+    def __init__(self,position):
+        self.position = position
+        self.previous = None
+
+    #Since nodeCell are cells, we can use the adjacentRoom function
+    def expand(self):
+        adjacentPosition = adjacentRooms(self.position[0],self.position[1])
+        cellList = []
+        for p in adjacentPosition:
+            newCell = nodeCell(p)
+            newCell.previous = self
+            cellList.append(newCell)
+        return cellList
+    def __eq__(self,other):
+        if(other == None):
+            return False
+        return self.position == other.position
+>>>>>>> b2cae6c6e09a43e271ac41fb852ca9a7f54ee2ca
