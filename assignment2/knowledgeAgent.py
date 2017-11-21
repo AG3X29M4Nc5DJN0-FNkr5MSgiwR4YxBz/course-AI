@@ -1,6 +1,9 @@
 from logic import *
 from utils import *
-from wumpusWorld import *
+from exploration import *
+
+#import time to test performance
+import time
 #A knowledge base for a wumpusWorld
 class wumpusKB():
     def __init__(self, wumpusWorld):
@@ -37,25 +40,25 @@ class wumpusKB():
                 #Add the double implication about pits to the kb
                 self.kb.tell(expr(head + " <=> " + body))
         #If we have a wumpus, then all adjacent rooms have stench
-      #  for i in range(0,4):
-      #          for j in range(0,4):
-      #              head = ("W"+str(i)+str(j))
-      #              body = "("
-      #              for room in adjacentRooms(i,j):
-      #                  body += "S"+str(room[0])+str(room[1])+" & "
-      #              body = body[:-2] + ")"
-      #              print(expr(head + " <=> "+body))
-      #              self.kb.tell(expr(head + " <=> " + body))
+#        for i in range(0,4):
+#                for j in range(0,4):
+#                    head = ("W"+str(i)+str(j))
+#                    body = "("
+#                    for room in adjacentRooms(i,j):
+#                        body += "S"+str(room[0])+str(room[1])+" & "
+#                    body = body[:-2] + ")"
+#                    print(expr(head + " <=> "+body))
+#                    self.kb.tell(expr(head + " <=> " + body))
         #If we have pit, then all adjacent rooms have breeze 
-      #  for i in range(0,4):
-      #         for j in range(0,4):
-      #             head = ("P"+str(i)+str(j))
-      #             body = "("
-      #             for room in adjacentRooms(i,j):
-      #                body += "B"+str(room[0])+str(room[1])+" & "
-      #             body = body[:-2] + ")"
-      #             print(expr(head + " <=> "+body))
-      #             self.kb.tell(expr(head + " <=> " + body))
+#        for i in range(0,4):
+#               for j in range(0,4):
+#                   head = ("P"+str(i)+str(j))
+#                   body = "("
+#                   for room in adjacentRooms(i,j):
+#                      body += "B"+str(room[0])+str(room[1])+" & "
+#                   body = body[:-2] + ")"
+#                   print(expr(head + " <=> "+body))
+#                   self.kb.tell(expr(head + " <=> " + body))
         #If we dont smell Stench then no wumpus in adjacent rooms
         for i in range(0,4):
                 for j in range(0,4):
@@ -100,28 +103,56 @@ class wumpusKB():
                 #Add the sentence that says at least one of them must be wumpus free
                 self.kb.tell(expr("~"+wr[i] + " | " + "~"+wr[j]))
 
+        #Build a list of symbols
+        self.symbolList = []
+        for clause in self.kb.clauses:
+            for symbol in prop_symbols(clause):
+                if(symbol not in self.symbolList):
+                   self.symbolList.append(symbol)
+
+
+
     #Take current percept as a list and update KB
     #[Breeze,Stench,Glitter,Bump,Scream]
     def addPercept(self,percept,x,y):
+        newSymbol = []
         #Tell KB we felt BXY or ~BXY (breeze at cell(x,y) )
         if(percept[0] == 0):
-            self.kb.tell("~B"+str(x)+str(y))
+            newSymbol.append("~B"+str(x)+str(y))
+            #self.kb.tell("~B"+str(x)+str(y))
+
         else:
-            self.kb.tell(expr("B"+str(x)+str(y)))
+            newSymbol.append("B"+str(x)+str(y))
+            #self.kb.tell(expr("B"+str(x)+str(y)))
         #Tell KB we felt SXY or ~SXY (Stench at cell(x,y) )
         if(percept[1] == 0):
-            self.kb.tell("~S"+str(x)+str(y))
+            newSymbol.append("~S"+str(x)+str(y))
+            #self.kb.tell("~S"+str(x)+str(y))
         else:
-            self.kb.tell(expr("S"+str(x)+str(y)))
+            newSymbol.append("S"+str(x)+str(y))
+            #self.kb.tell(expr("S"+str(x)+str(y)))
 
         #Tell KB if we saw glitter or not at cell (x,y)
         if(percept[2] == 0):
-            self.kb.tell("~G"+str(x)+str(y))
+            newSymbol.append("~G"+str(x)+str(y))
+            #self.kb.tell("~G"+str(x)+str(y))
         else:
-            self.kb.tell("G"+str(x)+str(y))
+            newSymbol.append("G"+str(x)+str(y))
+            #self.kb.tell("G"+str(x)+str(y))
+
+        #Tell the kb
+        for s in newSymbol:
+            self.kb.tell(expr(s))
+
+        #Update symbol list
+        for s in newSymbol:
+            if(expr(s) not in self.symbolList):
+                self.symbolList.append(expr(s))
+
 
     #Return true if room x,y is safe (no wumpus and no pit)
     def safe(self,x,y):
+        start = time.clock()
         #This is the expr we want to test if KB entails
         # ( ~Wxy & ~Pxy )
         safeExpr = expr("~W"+str(x)+str(y)+" & "+"~P"+str(x)+str(y))
@@ -132,13 +163,14 @@ class wumpusKB():
         #could improve
         clauseList = self.kb.clauses
         #build symbol list
-        s = []
-        for clause in clauseList:
-            for symbol in prop_symbols(clause):
-                if(symbol not in s):
-                    s.append(symbol)
+#        s = []
+        #TODO remove it and calculate it only once
+#        for clause in clauseList:
+#            for symbol in prop_symbols(clause):
+#                if(symbol not in s):
+#                    s.append(symbol)
         #Try dpll
-        result = dpll(clauseList,s,{})
+        result = dpll(self.kb.clauses,self.symbolList,{})
         #Remove our test safeExpr
         self.kb.retract(~safeExpr)
         #Uncomment to print the values of the dpll model
@@ -146,6 +178,8 @@ class wumpusKB():
   #        print(str(key) + " : " + str(result[key]))
 
         #Result = false if there was a contradiction => KB entails our safeExpr
+        end = time.clock()
+        print("Time spent in askSafe : " + str(end-start))
         if(result == False):
             return True
         else:
@@ -161,13 +195,13 @@ class wumpusKB():
 
         clauseList = self.kb.clauses
         #build symbol list
-        s = []
-        for clause in clauseList:
-            for symbol in prop_symbols(clause):
-                if(symbol not in s):
-                    s.append(symbol)
+#        s = []
+#        for clause in clauseList:
+#            for symbol in prop_symbols(clause):
+#                if(symbol not in s):
+#                    s.append(symbol)
         #Try dpll
-        result = dpll(clauseList,s,{})
+        result = dpll(self.kb.clauses,self.symbolList,{})
         #Remove our test safeExpr
         self.kb.retract(~safeExpr)
         #for key in result.keys():

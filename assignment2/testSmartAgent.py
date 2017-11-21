@@ -6,6 +6,7 @@ w0 = wumpusWorld()
 
 
 #Set the world
+
 #for i in range(0,4):
 #    for j in range(0,4):
 #        w0.r[i][j] = room()
@@ -32,16 +33,38 @@ w0 = wumpusWorld()
 #w0.r[1][1].pit = True
 #w0.r[2][3].gold = True
 #w0.r[3][2].pit = True
-scoreTotal = 0
-for i in range(10000):
-    w = wumpusWorld()
-    a = agent(0, 0, w)
-    while(not a.terminated):
-        a.astar_Agent(w)
-    a.status()
-    scoreTotal += a.finalScore
 
-print("Average payoff: {}".format(scoreTotal))
+#World #3, bug : KB should've been able to say gold tile was safe
+#Bug was : we added the cell to possiblySafe, later on we could've proved it was safe
+#But the cell stayed in possiblySafe
+#Fix : When added clause to kb, checkc if we can move cell from possibly to safe fringe
+#w0.r[2][0].wumpus = True
+#w0.r[1][2].pit = True
+#w0.r[3][2].gold = True
+#w0.r[3][3].pit = True
+
+#Test w0
+
+a = agent(0,0,w0)
+while(not a.terminated):
+    w0.printRoom()
+    a.status()
+    a.astar_Agent(w0)
+
+print(a.score)
+
+#scoreTotal = 0
+#for i in range(10000):
+#    w = wumpusWorld()
+#    a = agent(0, 0, w)
+#    while(not a.terminated):
+#        w.printRoom()
+#        a.status()
+#        a.astar_Agent(w)
+#    a.status()
+#    scoreTotal += a.finalScore
+
+#print("Average payoff: {}".format(scoreTotal))
 #print(a0.kb.kb.clauses)
 
 
