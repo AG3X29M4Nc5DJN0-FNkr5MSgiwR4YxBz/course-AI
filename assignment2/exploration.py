@@ -8,10 +8,7 @@ import time
 def makePlan(currentPosition,currentOrientation,goal,visitedNodeSet):
     plan = []
     simulationOrientation = currentOrientation
-    start = time.clock()
     currentCell = findGoalBFS(currentPosition,goal,visitedNodeSet)
-    end = time.clock()
-    print("Time spend in BFS to find path to goal : " + str(end-start))
     #From the goal cell, build in a list the trail of position
     trail = [currentCell.position]
     while(currentCell.previous != None):
@@ -52,16 +49,16 @@ def findGoalBFS(initialPosition,goal,visitedNodeSet):
     if(node == goal):
         return node 
     pFringe.insert(0,(node))
-    closed = [] 
+    closed = set()
     while(len(pFringe) > 0):
         currentNode = pFringe.pop()
-        closed.append(currentNode.position)
+        closed.add(tuple(currentNode.position))
         children = currentNode.expand()
         for child in children:
             if(child.position == goal.position):
                 return child
             #If its not goal and not already visited by our agent, we dont explore
-            if(child.position not in closed and child.position in visitedNodeSet):
+            if(tuple(child.position) not in closed and tuple(child.position) in visitedNodeSet):
                 pFringe.insert(0,child)
 
 #Return a list of actions to go from one adjacent position to the other  
@@ -109,7 +106,7 @@ def rotateDirectionRight(direction):
 #Node object for makeplan search
 class nodeCell():
     def __init__(self,position):
-        self.position = position
+        self.position = tuple(position)
         self.previous = None
 
     #Since nodeCell are cells, we can use the adjacentRoom function

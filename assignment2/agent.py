@@ -21,21 +21,22 @@ class agent():
         self.plan = Stack()
         self.terminated = False
 
-        #For astar_agent create a priorityQueue
-        #3 possibles values : 0 = safe, 1 = possibly safe and 2 = unsafe
-        #our astar will always try to visit safe cell first (h = askSafe)
-      #  self.fringe = PriorityQueue(order=min,f=agent.cellScore)
-      #  self.closed_set = set()
         #position used to simulate pathing
         self.simulationOrientation = 'r'
-
-        self.safeFringe = []
-        self.possiblySafeFringe = []
-        self.unsafeFringe = []
-        self.closed_set = [] 
+        #Fringe used to explore
+        #Our agent will try to explore the safe one first
+        self.safeFringe = set()
+        self.possiblySafeFringe = set()
+        self.unsafeFringe = set()
+        self.closed_set = set()
 
         #Agent first update its initial percept
         self.updatePercept(wumpusWorld)
+
+
+        #Stats for agent
+        self.startTime = time.clock()
+        self.movement = 0
 
     def updatePercept(self, wumpusWorld, bump=False, scream=False):
         # bump and scream are going to be boolean values
@@ -120,67 +121,53 @@ class agent():
     #Our heuristic is simple : if a cell is proved safe its more likely to be the goal
     #When called, it will do one action
     def astar_Agent(self, wumpusWorld):
-        start0 = time.clock()
+        #If we see gold, we pick it up next thing
+        if(self.percept[2]):
+            return self.performAction("grab_object",wumpusWorld)
         #Create a cell starting at current position
         currentCell = nodeCell(self.position)
         #Start by telling the kb its percept at current position
         #if we are at a new cell
-        if(self.position not in self.closed_set):
-            start = time.clock()
-            print("adding to kb "+str(self.position))
+        if(tuple(self.position) not in self.closed_set):
             self.kb.addPercept(self.percept,self.position[0],self.position[1])
-
+            
             #Whenever we add info to the kb, try to see if we can move nodes from possiblySafe
             #To safe fringe
-            for ele in self.possiblySafeFringe:
-                if(self.kb.safe(ele[0],ele[1])):
-                   #Its safe now, remove it from possiblySafe and put it in safeFringe
-                   self.safeFringe.append(ele)
-                   self.possiblySafeFringe.remove(ele)
+            #To save time, only do it if we have empty safe fringe
+            if(len(self.safeFringe) == 0):
+                toRemove = []
+                for ele in self.possiblySafeFringe:
+                    if(self.kb.safe(ele[0],ele[1])):
+                        #Its safe now, remove it from possiblySafe and put it in safeFringe
+                        self.safeFringe.add(ele)
+                        toRemove.append(ele)
+                #Cant remove element during iteration of a set
+                for ele in toRemove:
+                    self.possiblySafeFringe.remove(ele)
+
 
             #expand current cell (get neighbors)
             neighbors = adjacentRooms(self.position[0],self.position[1])
             for n in neighbors:
+                r = tuple(n)
                 #if n is new position
-                if n not in self.safeFringe and n not in self.possiblySafeFringe and \
-                n not in self.unsafeFringe and n not in self.closed_set:
+                if r not in self.safeFringe and r not in self.possiblySafeFringe and \
+                r not in self.unsafeFringe and r not in self.closed_set:
                     #add it to the right fringe
                     #Check if its safe
                     if(self.kb.safe(n[0],n[1])):
-                        self.safeFringe.append(n)
+                        self.safeFringe.add(r)
                     elif(self.kb.possiblySafe(n[0],n[1])):
-                        self.possiblySafeFringe.append(n)
+                        self.possiblySafeFringe.add(r)
                     else:
-                        self.unsafeFringe.append(n)
-            self.closed_set.append(self.position)
-            end = time.clock()
-            print("Time spend in the expand neighbors of unexplored cells : " +str(end-start))
+                        self.unsafeFringe.add(r)
 
-        #If we see gold, we pick it up next thing
-        if(self.percept[2]):
-            self.plan.insert(0,"grab_object")
-
-        #print("current orientation :")
-        #print(self.orientation)
-        #print("current plan :")
-        #print(self.plan)
+            
+            self.closed_set.add(tuple(self.position))
 
         #If plan is empty
         if len(self.plan) == 0:
  
-            print("Safe fringe :")
-            for ele in self.safeFringe:
-                print(str(ele))
-            print("PossiblySafe :")
-            for ele in self.possiblySafeFringe:
-                print(str(ele))
-            print("Unsafe :")
-            for ele in self.unsafeFringe:
-                print(str(ele))
-            print("Closed :")
-            for ele in self.closed_set:
-                print(str(ele))
-            
             #Try to remove a safe node
             #Make a plan for it
             if(len(self.safeFringe) > 0):
@@ -193,18 +180,12 @@ class agent():
                 #TODO try to kill wumpus
                 nextPosition = self.unsafeFringe.pop()
             
-            #When dequeued from fringe, add it to closed_set (visited cells)
-            #TODO test it
-            #self.closed_set.append(nextCell)
-            print("Choosed to move to : " +str(nextPosition))
-            self.plan = makePlan(self.position,self.orientation,nextPosition,self.closed_set)
+            self.plan = makePlan(tuple(self.position),self.orientation,tuple(nextPosition),self.closed_set)
         #Now we either created a new plan or we already had one
         #Get next step from plan
         action = self.plan.pop(0)
         #Perform action
         self.performAction(action,wumpusWorld)
-        end0 = time.clock()
-        print("Time spend in 1 iteration of astar : "+str(end0-start0))
 
     def dumbAgent(self, wumpusWorld):
         # performs actions at random
@@ -225,6 +206,7 @@ class agent():
     def performAction(self, action, wumpusWorld):
         # if action is to turn left, it will update the orientation
         # and percepts shouldnt change
+        self.movement += 1
         bump = False
         scream = False
         if action == 'turn_left':
@@ -284,6 +266,7 @@ class agent():
             #If the current location after moving is dangerous...we lose
             if(wumpusWorld.isDanger(self.position[0],self.position[1])):
                     self.score -= 1000
+                    self.endTime = time.clock()
                     self.terminated = True
         # the agent will try to grab an object
         # if there is nothing, nothing happens
@@ -293,6 +276,7 @@ class agent():
                 self.carrying[1] = "Gold"
                 self.score += 1000
                 #If we grab gold the simulation finish
+                self.endTime = time.clock()
                 self.terminated = True
 
 
@@ -337,6 +321,8 @@ class agent():
         if(self.terminated):
             print("[-] AGENT TERMINATED")
             print("SCORE : " + str(self.score))
+            print("Movement : " + str(self.movement))
+            print("TIME  : " + str(self.endTime - self.startTime))
             self.finalScore = self.score
         else:
             print("[+] Agent status")

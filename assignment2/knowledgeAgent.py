@@ -152,7 +152,6 @@ class wumpusKB():
 
     #Return true if room x,y is safe (no wumpus and no pit)
     def safe(self,x,y):
-        start = time.clock()
         #This is the expr we want to test if KB entails
         # ( ~Wxy & ~Pxy )
         safeExpr = expr("~W"+str(x)+str(y)+" & "+"~P"+str(x)+str(y))
@@ -163,13 +162,8 @@ class wumpusKB():
         result = dpll(self.kb.clauses,self.symbolList,{})
         #Remove our test safeExpr
         self.kb.retract(~safeExpr)
-        #Uncomment to print the values of the dpll model
-  #      for key in result.keys():
-  #        print(str(key) + " : " + str(result[key]))
 
         #Result = false if there was a contradiction => KB entails our safeExpr
-        end = time.clock()
-        print("Time spent in askSafe : " + str(end-start))
         if(result == False):
             return True
         else:
@@ -187,8 +181,6 @@ class wumpusKB():
         result = dpll(self.kb.clauses,self.symbolList,{})
         #Remove our test safeExpr
         self.kb.retract(~safeExpr)
-        #for key in result.keys():
-        #   print(str(key) + " : " + str(result[key]))
 
         #Result = false if there was a contradiction => KB entails our safeExpr
         #We return the negation of entails, we want to return True if KB DOES NOT entails our expr
@@ -198,18 +190,3 @@ class wumpusKB():
         else:
             return True
 
-
-#Uncomment to test a random world
-
-#world = wumpusWorld()
-#wKB = wumpusKB(world)
-
-#world.printRoom()
-#wKB.addPercept(world.percept,world.aPos[0],world.aPos[1])
-
-#print(wKB.kb.clauses)
-#print("Checking SAFE(0,1) : "+ str(wKB.safe(0,1)))
-#print("Checking SAFE(1,0) : "+ str(wKB.safe(1,0)))
-
-#print("Checking possiblySAFE(0,1) : "+str(wKB.possiblySafe(0,1)))
-#print("Checking possiblySAFE(1,0) : "+str(wKB.possiblySafe(1,0)))

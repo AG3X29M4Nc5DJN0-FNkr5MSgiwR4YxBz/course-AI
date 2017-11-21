@@ -43,26 +43,57 @@ w0 = wumpusWorld()
 #w0.r[3][2].gold = True
 #w0.r[3][3].pit = True
 
+#World #4. bug : sometimes when moving agents world didnt remove older one
+#w0.r[3][1].wumpus = True
+#w0.r[2][3].gold = True
+#w0.r[2][2].pit = True
+
+
+#[] [] [P] [G]
+#[WA] [] [P] []
+#[] [P] [] []
+#[] [] [] [P]
+
+#World #5, bug : should've known there was a wumpus at 0,2 since we didnt smell it at 1,0
+#Fix : uncommented the rules saying a wumpus must be smelly at every adjacent squares
+#TODO this fix bugged other cases, maybe we can find a better rule?
+#w0.r[1][1].pit = True
+#w0.r[0][2].wumpus = True
+#w0.r[3][0].pit = True
+#w0.r[2][2].pit= True
+#w0.r[2][3].pit = True
+#w0.r[3][3].gold = True
+
+#[] [] [P] [] 
+#[] [P] [] [] 
+#[] [WA] [] [G] 
+#[] [P] [P] [] 
+
+#World #6, bug : thing 1,1 is safe
+#w0.r[1][0].pit = True
+#w0.r[1][1].wumpus = True
+#w0.r[3][1].gold = True
+
+
 #Test w0
 
-a = agent(0,0,w0)
-while(not a.terminated):
-    w0.printRoom()
-    a.status()
-    a.astar_Agent(w0)
-
-print(a.score)
-
-#scoreTotal = 0
-#for i in range(10000):
-#    w = wumpusWorld()
-#    a = agent(0, 0, w)
-#    while(not a.terminated):
-#        w.printRoom()
-#        a.status()
-#        a.astar_Agent(w)
+#a = agent(0,0,w0)
+#while(not a.terminated):
+#    w0.printRoom()
 #    a.status()
-#    scoreTotal += a.finalScore
+#    a.astar_Agent(w0)
+
+#w0.printRoom()
+
+scoreTotal = 0
+for i in range(10000):
+    print("[+] Simulation #"+str(i))
+    w = wumpusWorld()
+    a = agent(0, 0, w)
+    while(not a.terminated):
+        a.astar_Agent(w)
+    a.status()
+    scoreTotal += a.finalScore
 
 #print("Average payoff: {}".format(scoreTotal))
 #print(a0.kb.kb.clauses)

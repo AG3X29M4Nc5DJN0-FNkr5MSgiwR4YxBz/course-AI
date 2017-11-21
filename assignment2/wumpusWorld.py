@@ -104,7 +104,6 @@ class wumpusWorld():
         self.aDir = 'r'
 
         self.percept = self.getPercept(0,0)
-        print(self.percept)
 
     #percept felt by the agent
     #[Stench,Breeze,Glitter,Bump,Scream]
@@ -141,6 +140,9 @@ class wumpusWorld():
     def moveAgent(self,x,y):
         self.r[self.aPos[0]][self.aPos[1]].agent = False
         self.r[x][y].agent = True
+        #Update agent position
+        self.aPos[0] = x
+        self.aPos[1] = y 
 
     def moveWumpus(self,oldX,oldY,x,y): # used for tests
         self.r[oldX][oldY].wumpus = False
