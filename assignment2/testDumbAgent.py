@@ -7,7 +7,6 @@ w0 = wumpusWorld()
 for i in range(0,4):
     for j in range(0,4):
         w0.r[i][j] = room()
-
 w0.r[2][0].pit = True
 w0.r[0][2].wumpus = True
 w0.r[1][2].gold = True
