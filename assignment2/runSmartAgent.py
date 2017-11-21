@@ -7,18 +7,18 @@ w0 = wumpusWorld()
 
 #Set the world
 
-#for i in range(0,4):
-#    for j in range(0,4):
-#        w0.r[i][j] = room()
+for i in range(0,4):
+    for j in range(0,4):
+        w0.r[i][j] = room()
 
 #world#0 - original simulation
 
-#w0.r[2][0].pit = True
-#w0.r[0][2].wumpus = True
-#w0.r[1][2].gold = True
-#w0.r[2][2].pit = True
-#w0.r[3][3].pit = True
-#w0.r[0][0].agent = True
+w0.r[2][0].pit = True
+w0.r[0][2].wumpus = True
+w0.r[1][2].gold = True
+w0.r[2][2].pit = True
+w0.r[3][3].pit = True
+w0.r[0][0].agent = True
 
 #World #1
 
@@ -77,24 +77,25 @@ w0 = wumpusWorld()
 
 #Test w0
 
-#a = agent(0,0,w0)
-#while(not a.terminated):
-#    w0.printRoom()
-#    a.status()
-#    a.astar_Agent(w0)
-
-#w0.printRoom()
-
-scoreTotal = 0
-for i in range(10000):
-    print("[+] Simulation #"+str(i))
-    w = wumpusWorld()
-    a = agent(0, 0, w)
-    while(not a.terminated):
-        a.astar_Agent(w)
+a = agent(0,0,w0)
+while(not a.terminated):
+    w0.printRoom()
     a.status()
-    print("")
-    scoreTotal += a.finalScore
+    a.smartAgent(w0)
+
+a.status()
+w0.printRoom()
+
+#scoreTotal = 0
+#for i in range(10000):
+#    print("[+] Simulation #"+str(i))
+#    w = wumpusWorld()
+#    a = agent(0, 0, w)
+#    while(not a.terminated):
+#        a.astar_Agent(w)
+#    a.status()
+#    print("")
+#    scoreTotal += a.finalScore
 
 #print("Average payoff: {}".format(scoreTotal))
 #print(a0.kb.kb.clauses)

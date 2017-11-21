@@ -121,7 +121,7 @@ class agent():
     #Smart agent using A*
     #Our heuristic is simple : if a cell is proved safe its more likely to be the goal
     #When called, it will do one action
-    def astar_Agent(self, wumpusWorld):
+    def smartAgent(self, wumpusWorld):
         #If we see gold, we pick it up next thing
         if(self.percept[2]):
             return self.performAction("grab_object",wumpusWorld)

@@ -83,11 +83,17 @@ def pathAdjacentPosition(p0,p1,simulationOrientation):
         desiredDirection = 'l'
     
     #Calculate the action to do to be in the right direction
-    #TODO improve if we have time
-    #While we dont face the right wait, turn right until we do
     while(not(simulationOrientation == desiredDirection)):
-        simulationOrientation = rotateDirectionRight(simulationOrientation)
-        plan.append("turn_right")
+        if simulationOrientation == 'u' and desiredDirection == 'l' \
+        or simulationOrientation == 'l' and desiredDirection == 'd' \
+        or simulationOrientation == 'd' and desiredDirection == 'r' \
+        or simulationOrientation == 'r' and desiredDirection == 'u':
+            simulationOrientation = rotateDirectionLeft(simulationOrientation)
+            plan.append("turn_left")  # you only need to turn left once, if desired orientation is behind, 2 turns
+        else:
+            simulationOrientation = rotateDirectionRight(simulationOrientation)
+            plan.append("turn_right")
+
     #Now move forward
     plan.append("move_forward")
     return plan,simulationOrientation
@@ -102,6 +108,17 @@ def rotateDirectionRight(direction):
         return 'u'
     elif(direction == 'u'):
         return 'r'
+
+def rotateDirectionLeft(direction):
+    if(direction == 'r'):
+        return 'u'
+    elif(direction == 'u'):
+        return 'l'
+    elif(direction == 'l'):
+        return 'd'
+    elif(direction == 'd'):
+        return 'r'
+
 
 #Node object for makeplan search
 class nodeCell():
