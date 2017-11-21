@@ -332,8 +332,6 @@ class agent():
 
     #Return a list of actions to go from currentPosition
     #To goal position (given by goal : [x,y])
-    #Moving only through already visited cells (cells in closed_set)
-    #TODO fix if we take as parameters obj or []
     def makePlan(self, goal):
         plan = []
         self.simulationOrientation = self.orientation
@@ -461,11 +459,16 @@ class agent():
             desiredDirection = 'l'
 
         #Calculate the action to do to be in the right direction
-        #TODO improve if we have time
         #While we dont face the right wait, turn right until we do
         while(not(self.simulationOrientation == desiredDirection)):
             self.simulationOrientation = rotateDirectionRight(self.simulationOrientation)
-            plan.append("turn_right")
+            if self.simulationOrientation == 'u' and desiredDirection == 'l' \
+            or self.simulationOrientation == 'l' and desiredDirection == 'd' \
+            or self.simulationOrientation == 'd' and desiredDirection == 'r' \
+            or self.simulationOrientation == 'r' and desiredDirection == 'u':
+                plan.apped("turn_left")     # you only need to turn left once, if desired orientation is behind, 2 turns
+            else:
+                plan.append("turn_right")
         #now we just need to move forward
         plan.append("move_forward")
         return plan
