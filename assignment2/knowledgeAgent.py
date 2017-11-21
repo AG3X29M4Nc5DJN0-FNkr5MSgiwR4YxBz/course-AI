@@ -159,16 +159,6 @@ class wumpusKB():
         #Tell kb the negation of the expr we want to see if it entails
         self.kb.tell(~safeExpr)
 
-        #Build elements for dpll
-        #could improve
-        clauseList = self.kb.clauses
-        #build symbol list
-#        s = []
-        #TODO remove it and calculate it only once
-#        for clause in clauseList:
-#            for symbol in prop_symbols(clause):
-#                if(symbol not in s):
-#                    s.append(symbol)
         #Try dpll
         result = dpll(self.kb.clauses,self.symbolList,{})
         #Remove our test safeExpr
@@ -193,13 +183,6 @@ class wumpusKB():
         #Tell kb the negation of the expr we want to see if it entails
         self.kb.tell(~safeExpr)
 
-        clauseList = self.kb.clauses
-        #build symbol list
-#        s = []
-#        for clause in clauseList:
-#            for symbol in prop_symbols(clause):
-#                if(symbol not in s):
-#                    s.append(symbol)
         #Try dpll
         result = dpll(self.kb.clauses,self.symbolList,{})
         #Remove our test safeExpr
