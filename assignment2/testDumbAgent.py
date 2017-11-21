@@ -25,3 +25,26 @@ while(not a0.terminated):
     w0.printRoom()
     a0.status()
 
+s0_Score = a0.score
+
+counter = 0
+scoreList = []
+while(counter < 10000):
+    #Create a new world
+    w = wumpusWorld()
+    #create a new agent
+    a = agent(0,0,w)
+    #Do the testDumbAgent simulation
+    while(not a.terminated):
+        a.dumbAgent(w0)
+    #once finish, print status
+    a.status()
+
+    #Add score to an array
+    scoreList.append(a.score)
+    counter += 1
+
+print("Final results ")
+print("Score sim0 = "+str(s0_Score))
+print(scoreList)
+

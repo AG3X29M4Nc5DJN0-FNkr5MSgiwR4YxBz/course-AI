@@ -182,20 +182,6 @@ class wumpusKB():
             return True
 
 
-#Return a list of adjacent rooms in the form [x,y]
-def adjacentRooms(x,y):
-    r = []
-    if(x > 0):
-        r.append([x-1,y])
-    if(x < 3):
-        r.append([x+1,y])
-    if(y > 0):
-        r.append([x,y-1])
-    if(y < 3):
-        r.append([x,y+1])
-    return r
-        
-
 #Uncomment to test a random world
 
 #world = wumpusWorld()
