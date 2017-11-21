@@ -4,6 +4,7 @@ from node import *
 import random
 from knowledgeAgent import *
 
+
 class agent():
     def __init__(self,x,y,wumpusWorld):
         self.position = [x, y]
@@ -190,9 +191,6 @@ class agent():
         #Perform action
         self.performAction(action,wumpusWorld)
 
-
-
-
     def dumbAgent(self, wumpusWorld):
         # performs actions at random
 
@@ -266,8 +264,8 @@ class agent():
                 else:
                     bump=True
             #Tell world we moved to cell x,y
-            #TODO improve this
-            wumpusWorld.moveAgent(oldX,oldY,self.position[0], self.position[1])
+            #TODO I don't see how better we can make that be ...
+            wumpusWorld.moveAgent(self.position[0], self.position[1])
             #If the current location after moving is dangerous...we lose
             if(wumpusWorld.isDanger(self.position[0],self.position[1])):
                     self.score -= 1000
@@ -288,10 +286,6 @@ class agent():
         # get removed from the world, im not sure if the stenches are
         # removed too
         elif action == 'fire_arrow':
-            if wumpusWorld.wX is None or wumpusWorld.wY is None:
-                self.score -= 10
-                print("NO ARROW")
-                return
             self.score -= 10
             self.carrying[0] = 0
             if self.orientation == 'r':
@@ -338,9 +332,9 @@ class agent():
 
     #Return a list of actions to go from currentPosition
     #To goal position (given by goal : [x,y])
-    #Moving only throught already visited cells (cells in closed_set)
+    #Moving only through already visited cells (cells in closed_set)
     #TODO fix if we take as parameters obj or []
-    def makePlan(self,goal):
+    def makePlan(self, goal):
         plan = []
         self.simulationOrientation = self.orientation
         currentCell = self.findGoalBFS(self.position,goal)
@@ -421,77 +415,60 @@ class agent():
                 if(child.position not in closed and child in self.closed_set):
                      pFringe.insert(0,child)
 
+    #quickly made bfs with cell class
+    #return the goal cell with .previous containing the path
+    def findGoalBFS(self,initialPosition,goal):
+        pFringe = []
+        node = nodeCell(initialPosition)
+        goal = nodeCell(goal)
+         #If we are already at the goal, return empty plan
+        if(node == goal):
+            return node
+        pFringe.insert(0,(node))
+        closed = []
+        while(len(pFringe) > 0):
+            currentNode = pFringe.pop()
+            closed.append(currentNode.position)
+            children = currentNode.expand()
+            for child in children:
+                #If child is not already visited in our BFS
+                if(child.position not in closed):
+                    if(child.position == goal.position):
+                        return child
+                    #If its not goal and not already visited by our agent, we dont explore
+                    if(child.position not in closed and child not in self.closed_set):
+                        pFringe.insert(0,child)
 
+    #Return a list of actions to go from one adjacent position to the other
+    def pathAdjacentPosition(self,p0,p1):
+        x0 = p0[0]
+        y0 = p0[1]
+        x1 = p1[0]
+        y1 = p1[1]
+        #First, check that the distance between the two position is 1
+        dX = abs(x1-x0)
+        dY = abs(y1-y0)
+        plan = []
+        assert(dX+dY == 1)
+        #Now, check the direction we should face
+        if(x1 > x0):
+            desiredDirection = 'r'
+        elif(y1 > y0):
+            desiredDirection = 'u'
+        elif(y0 > y1):
+            desiredDirection = 'd'
+        else:
+            desiredDirection = 'l'
 
-
-#return 0 if safe
-#return 1 if possibly safe
-#return 2 if unsafe
-def cellScore(kb,node):
-    if(kb.safe(node.position[0],node.position[1])):
-        return 0
-    elif(kb.possiblySafe(node.position[0],node.position[1])):
-        return 1
-    else:
-        return 2
- 
-
-    
-
-#quickly made bfs with cell class
-#return the goal cell with .previous containing the path
-def findGoalBFS(initialPosition,goal): 
-    pFringe = []
-    node = nodeCell(initialPosition)
-    goal = nodeCell(goal)
-     #If we are already at the goal, return empty plan
-    if(node == goal):
-        return node 
-    pFringe.insert(0,(node))
-    closed = [] 
-    while(len(pFringe) > 0):
-        currentNode = pFringe.pop()
-        closed.append(currentNode.position)
-        children = currentNode.expand()
-        for child in children:
-            #If child is not already visited in our BFS
-            if(child.position not in closed):
-                if(child.position == goal.position):
-                    return child
-                #If its not goal and not already visited by our agent, we dont explore
-                if(child.position not in closed and child not in self.closed_set):
-                    pFringe.insert(0,child)
-
-#Return a list of actions to go from one adjacent position to the other  
-def pathAdjacentPosition(p0,p1):
-    x0 = p0[0]
-    y0 = p0[1]
-    x1 = p1[0]
-    y1 = p1[1]
-    #First, check that the distance between the two position is 1
-    dX = abs(x1-x0)
-    dY = abs(y1-y0)
-    plan = []
-    assert(dX+dY == 1)
-    #Now, check the direction we should face
-    if(x1 > x0):
-        desiredDirection = 'r'
-    elif(y1 > y0):
-        desiredDirection = 'u'
-    elif(y0 > y1):
-        desiredDirection = 'd'
-    else:
-        desiredDirection = 'l'
-    
-    #Calculate the action to do to be in the right direction
-    #TODO improve if we have time
-    #While we dont face the right wait, turn right until we do
-    while(not(self.simulationOrientation == desiredDirection)):
-        self.simulationOrientation = rotateDirectionRight(self.simulationOrientation)
-        plan.append("turn_right")
-    #now we just need to move forward
-    plan.append("move_forward")
-    return plan
+        #Calculate the action to do to be in the right direction
+        #TODO improve if we have time
+        #While we dont face the right wait, turn right until we do
+        while(not(self.simulationOrientation == desiredDirection)):
+            self.simulationOrientation = rotateDirectionRight(self.simulationOrientation)
+            plan.append("turn_right")
+        #now we just need to move forward
+        plan.append("move_forward")
+        return plan
 
 #Take a direction as char and return the direction if we turn right
 def rotateDirectionRight(direction):
@@ -503,6 +480,17 @@ def rotateDirectionRight(direction):
         return 'u'
     elif(direction == 'u'):
         return 'r'
+
+#return 0 if safe
+#return 1 if possibly safe
+#return 2 if unsafe
+def cellScore(kb,node):
+    if(kb.safe(node.position[0],node.position[1])):
+        return 0
+    elif(kb.possiblySafe(node.position[0],node.position[1])):
+        return 1
+    else:
+        return 2
 
 #Node object for makeplan search
 class nodeCell():
@@ -523,86 +511,3 @@ class nodeCell():
         if(other == None):
             return False
         return self.position == other.position
-
-
-    # def expandAction(self, initial, actions):
-    #     # returns a list of possible outcomes for every possible actions
-    #
-    #     # initial is a list containing a position and an orientation like so:
-    #     possible_states = []
-    #     pos = initial[0]  # pos is a list of x and y ; ex: [0, 1]
-    #     ori = initial[1]  # ori is a letter depicting which direction the agent
-    #                       # is facing
-    #     # get a list of all possible actions in i
-    #     for i in actions.items():
-    #         temp_pos = pos  # get a temporary position and orientation
-    #         temp_ori = ori
-    #
-    #         # we check for every movement action and if it is valid
-    #         if i[0] == 'turn_left' and i[1]:
-    #             if ori == 'r':
-    #                 temp_ori = 'u'  # change temp to the proper orientation
-    #             elif ori == 'u':
-    #                 temp_ori = 'l'
-    #             elif ori == 'l':
-    #                 temp_ori = 'd'
-    #             else:
-    #                 temp_ori = 'r'
-    #             # now we push the new configuration into the new possible_state list
-    #             # we need to keep track of the position, orientation and the action taken
-    #             # to be able to create a sequence of actions later on
-    #             possible_states.append(temp_pos, temp_ori, 'turn_left')
-    #         if i[0] == 'turn_right' and i[1]:
-    #             if ori == 'r':
-    #                 temp_ori = 'd'
-    #             elif ori == 'd':
-    #                 temp_ori = 'l'
-    #             elif ori == 'l':
-    #                 temp_ori = 'u'
-    #             else:
-    #                 temp_ori = 'r'
-    #             possible_states.append(temp_pos, temp_ori, 'turn_right')
-    #         if i[0] == 'move_forward' and i[1]:
-    #             if ori == 'r' and pos[0] < 3:
-    #                 temp_pos = [temp_pos[0]+1, temp_pos[1]]
-    #             elif ori == 'd' and pos[1] > 0:
-    #                 temp_pos = [temp_pos[0], temp_pos[1]-1]
-    #             elif ori == 'l' and pos[0] > 0:
-    #                 temp_pos = [temp_pos[0]-1, temp_pos[1]]
-    #             elif ori == 'u' and pos[1] < 3:
-    #                 temp_pos = [temp_pos[0], temp_pos[1]+1]
-    #             possible_states.append(temp_pos, temp_ori, 'move_forward')
-    #     return possible_states
-    #
-    # # this method is supposed to be the one doing exploration to find out
-    # # the best sequence of action to do ...
-    # def whichAction(self, wumpusWorld):  # hybrid wumpus agent method
-    #     self.kb.tell(self.updatePercept(wumpusWorld))
-    #
-    #     # get the adjacent rooms to where the agent is
-    #     adjRooms = adjacentRooms(self.position[0], self.position[1])
-    #     safe_frontier = []
-    #     unsafe_frontier = []
-    #     visited = [[0, 0]]
-    #
-    #     for i in range(len(adjRooms)):
-    #         if i not in visited not in safe_frontier not in unsafe_frontier:
-    #             if self.kb.safe(i[0], i[1]):
-    #                 safe_frontier.append(i)
-    #             else:
-    #                 unsafe_frontier.append(i)
-    #
-    # def pathPlanning(self, goal_cell):
-    #     fringe = Stack()
-    #     closed = set()
-    #     init_state = [self.position, self.orientation, ""]
-    #     fringe.push(init_state)
-    #     while not fringe.isEmpty():
-    #         currentNode = fringe.pop()
-    #         if currentNode[0] == goal_cell:
-    #             return currentNode[2]
-    #         closed.add(currentNode)
-    #         children = self.expandAction([currentNode[0], currentNode[1]], self.possibleActions())
-    #         for node in children:
-    #             if node not in closed or node not in fringe:
-    #                 node[2] += currentNode

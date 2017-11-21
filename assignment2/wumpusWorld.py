@@ -138,8 +138,8 @@ class wumpusWorld():
                 print(str(self.r[i][j]), end=' ')
             print('',end='\n')
     #Move an agent from a space to another
-    def moveAgent(self,oldX,oldY,x,y):
-        self.r[oldX][oldY].agent = False
+    def moveAgent(self,x,y):
+        self.r[self.aPos[0]][self.aPos[1]].agent = False
         self.r[x][y].agent = True
 
     def moveWumpus(self,oldX,oldY,x,y): # used for tests
