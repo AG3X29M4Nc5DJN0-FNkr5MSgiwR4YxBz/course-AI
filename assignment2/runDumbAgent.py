@@ -1,54 +1,42 @@
 from wumpusWorld import *
 from agent import *
-from knowledgeAgent import *
-import random
 
-random.seed(1234)
+flag = input("Please type 0 to run default simulation or anything else to run a random world: ")
 
-w0 = wumpusWorld()
-#Set the world
-for i in range(0,4):
-    for j in range(0,4):
-        w0.r[i][j] = room()
-w0.r[2][0].pit = True
-w0.r[0][2].wumpus = True
-w0.r[1][2].gold = True
-w0.r[2][2].pit = True
-w0.r[3][3].pit = True
-w0.r[0][0].agent = True
+if flag == '0':
+    # Set the world
+    # #world#0 - original simulation
+    w0 = wumpusWorld()
 
-#Create agent
-print("Creating Agent")
-a0 = agent(0,0,w0)
+    # overwrites the rooms created by the constructor for the test
+    for i in range(0, 4):
+        for j in range(0, 4):
+            w0.r[i][j] = room()
 
-w0.printRoom()
-while(not a0.terminated):
-    a0.dumbAgent(w0)
-    w0.printRoom()
-    a0.status()
+    # resets the rooms to the default configuration
+    w0.r[2][0].pit = True
+    w0.r[0][2].wumpus = True
+    w0.r[1][2].gold = True
+    w0.r[2][2].pit = True
+    w0.r[3][3].pit = True
+    w0.r[0][0].agent = True
 
-s0_Score = a0.score
-
-counter = 0
-scoreList = []
-scoreTotal = 0
-while(counter < 10000):
-    #Create a new world
-    w = wumpusWorld()
-    #create a new agent
-    a = agent(0,0,w)
-    #Do the testDumbAgent simulation
-    while(not a.terminated):
-        a.dumbAgent(w)
-    #once finish, print status
+    # create the agent
+    a = agent(0, 0, w0)
+    while (not a.terminated):  # run until agent died or picked up gold
+        w0.printRoom()
+        a.status()
+        a.dumbAgent(w0)
     a.status()
-    scoreTotal += a.finalScore
-
-print("Average payoff: {}".format(scoreTotal))
-    # scoreList.append(a.score)
-    # counter += 1
-
-# print("Final results ")
-# print("Score sim0 = "+str(s0_Score))
-# print(scoreList)
-
+    w0.printRoom()
+else:
+    #create a random world
+    w = wumpusWorld()
+    # create the agent
+    a = agent(0, 0, w)
+    while (not a.terminated):  # run until agent died or picked up gold
+        w.printRoom()
+        a.status()
+        a.dumbAgent(w)
+    a.status()
+    w.printRoom()
